@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Navyaa — Content</title>
+  <style>
+    body { font-family: 'DM Sans', Helvetica, Arial, sans-serif; }
+  </style>
+</head>
+<body>
+  <!-- Decap CMS (the actively-maintained fork of Netlify CMS) -->
+  <script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js"></script>
+
+  <script>
+    // ---------------------------------------------------------------
+    // Navyaa Intelligence widget: an "Analyze with AI" panel that calls
+    // our Netlify Function (which calls OpenAI) and shows suggestions
+    // for the writer to read and apply themselves to the real fields
+    // below (Pillar, Mood, Excerpt, Tags, etc). It never writes those
+    // fields for you and nothing publishes automatically — you always
+    // review and set them yourself before hitting Publish.
+    // ---------------------------------------------------------------
+    var h = window.h; // Decap CMS exposes createElement as `h` via CreateReactClass/React under the hood
+
+    var NavyaaAIControl = window.createClass({
+      getInitialState: function () {
+        return { loading: false, error: "", result: null };
+      },
+      analyze: function () {
+        var self = this;
+        var entry = this.props.entry;
+        var title = (entry && entry.getIn(["data", "title"])) || "";
+        var body = (entry && entry.getIn(["data", "body"])) || "";
+
+        if (!title && !body) {
+          self.setState({ error: "Write a title or some content first.", result: null });
+          return;
+        }
+
+        self.setState({ loading: true, error: "", result: null });
+
+        fetch("/api/ai-suggest", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ title: title, content: body }),
+        })
+          .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+          .then(function (res) {
+            if (!res.ok) {
+              self.setState({ loading: false, error: res.data.error || "Request failed." });
+              return;
+            }
+            self.setState({ loading: false, result: res.data });
+            self.props.onChange(JSON.stringify(res.data));
+          })
+          .catch(function (err) {
+            self.setState({ loading: false, error: "Request failed: " + err.message });
+          });
+      },
+      render: function () {
+        var state = this.state;
+        var r = state.result;
+
+        var box = { border: "1px solid #D8D1C8", borderRadius: "4px", padding: "16px", marginTop: "10px", background: "#F7F4EE", fontSize: "13px", lineHeight: "1.6" };
+        var btn = { background: "#6E3035", color: "#F7F4EE", border: "none", borderRadius: "3px", padding: "10px 18px", fontSize: "13px", cursor: "pointer" };
+
+        var children = [
+          h("button", { type: "button", style: btn, onClick: this.analyze, disabled: state.loading },
+            state.loading ? "Analyzing…" : "Analyze with AI"
+          ),
+        ];
+
+        if (state.error) {
+          children.push(h("div", { style: { color: "#6E3035", marginTop: "8px", fontSize: "13px" } }, state.error));
+        }
+
+        if (r) {
+          children.push(
+            h("div", { style: box }, [
+              h("div", { key: "cat" }, [h("strong", null, "Pillar: "), r.category || "—"]),
+              h("div", { key: "mood" }, [h("strong", null, "Mood: "), r.mood || "—", r.secondary_mood ? " / " + r.secondary_mood : ""]),
+              h("div", { key: "int" }, [h("strong", null, "Intensity: "), r.intensity != null ? r.intensity : "—"]),
+              h("div", { key: "exc" }, [h("strong", null, "Excerpt: "), r.excerpt || "—"]),
+              h("div", { key: "seo" }, [h("strong", null, "SEO title: "), r.seo_title || "—"]),
+              h("div", { key: "meta" }, [h("strong", null, "Meta description: "), r.meta_description || "—"]),
+              h("div", { key: "tags" }, [h("strong", null, "Tags: "), (r.tags || []).join(", ") || "—"]),
+              h("div", { key: "quote" }, [h("strong", null, "Featured quote: "), r.featured_quote || "—"]),
+              h("div", { key: "note", style: { marginTop: "10px", color: "#77736D", fontStyle: "italic" } },
+                "Copy whichever of these you agree with into the fields below. Nothing here is applied automatically."
+              ),
+            ])
+          );
+        }
+
+        return h("div", null, children);
+      },
+    });
+
+    var NavyaaAIPreview = window.createClass({
+      render: function () {
+        return h("div", { style: { fontSize: "12px", color: "#77736D" } }, "AI suggestions (see the edit pane)");
+      },
+    });
+
+    CMS.registerWidget("navyaa-ai", NavyaaAIControl, NavyaaAIPreview);
+
+    CMS.init();
+  </script>
+</body>
+</html>

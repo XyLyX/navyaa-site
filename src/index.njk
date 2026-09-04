@@ -1,0 +1,126 @@
+---
+layout: base.njk
+title: Navyaa
+permalink: /
+eleventyExcludeFromCollections: true
+---
+{% set allPosts = collections.postsFeaturedFirst %}
+{% set featured = allPosts[0] %}
+{% set latest = allPosts | slice(1, 4) %}
+{% set mostRead = collections.posts | slice(0, 5) %}
+
+{% if featured %}
+<section class="nvy-hero">
+	{% if featured.data.image %}<img src="{{ featured.data.image }}" alt="{{ featured.data.title }}">{% endif %}
+	<div class="nvy-hero-scrim"></div>
+	<div class="nvy-hero-content">
+		<h1 class="nvy-serif">{{ featured.data.title }}</h1>
+		<p>{{ featured.data.excerpt }}</p>
+		<div><a href="{{ featured.url }}" class="nvy-btn">READ THE LATEST &rarr;</a></div>
+	</div>
+</section>
+{% endif %}
+
+<section class="nvy-section">
+	<div class="nvy-eyebrow">Explore Navyaa</div>
+	<div class="nvy-explore-grid">
+		{% for p in pillars %}
+		{% set pillarPosts = collections.postsByPillar[p] %}
+		{% set tileImg = pillarPosts[0].data.image if pillarPosts.length else null %}
+		<div style="display:flex; flex-direction:column; gap:16px;">
+			<a class="nvy-explore-tile-img" href="/{{ p | slugify }}/">
+				{% if tileImg %}<img src="{{ tileImg }}" alt="{{ p }}">{% endif %}
+			</a>
+			<div class="nvy-explore-tile" style="display:flex; flex-direction:column; gap:6px;">
+				<h3 class="nvy-serif">{{ p | upper }}</h3>
+				<div class="sub">{{ pillarSubs[p] }}</div>
+				<a href="/{{ p | slugify }}/" class="nvy-link" style="font-size:13px; margin-top:4px;">&rarr;</a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</section>
+
+{% if featured %}
+<section class="nvy-featured">
+	<div class="nvy-featured-text">
+		<div class="nvy-eyebrow" style="color:#B5A99A;">Featured Essay</div>
+		<h2 class="nvy-serif">{{ featured.data.title }}</h2>
+		<div class="nvy-sans" style="font-size:12.5px; letter-spacing:0.5px; color:#B5A99A;">
+			{{ featured.date | dateFmt("LLLL d, yyyy") }} &middot; {{ featured.templateContent | readingTime }} min read
+		</div>
+		<a href="{{ featured.url }}" class="nvy-sans" style="color:#F7F4EE; font-size:13px; border-bottom:1px solid #F7F4EE; padding-bottom:2px; width:fit-content;">Read the essay &rarr;</a>
+	</div>
+	<div class="nvy-featured-img">
+		{% if featured.data.image %}<img src="{{ featured.data.image }}" alt="{{ featured.data.title }}">{% endif %}
+	</div>
+</section>
+{% endif %}
+
+{% if latest.length %}
+<section class="nvy-section">
+	<div style="display:flex; align-items:baseline; justify-content:space-between;">
+		<div class="nvy-eyebrow">The Latest</div>
+	</div>
+	<div class="nvy-card-grid">
+		{% for p in latest %}
+		<a class="nvy-card" href="{{ p.url }}" style="display:flex; flex-direction:column; gap:16px;">
+			<div class="nvy-card-img">{% if p.data.image %}<img src="{{ p.data.image }}" alt="{{ p.data.title }}">{% endif %}</div>
+			<div class="nvy-tag">{{ p.data.pillar }}</div>
+			<h3 class="nvy-serif">{{ p.data.title }}</h3>
+			<p>{{ p.data.excerpt }}</p>
+			<div class="meta">{{ p.date | dateFmt("LLLL d, yyyy") }} &middot; {{ p.templateContent | readingTime }} min read</div>
+		</a>
+		{% endfor %}
+	</div>
+</section>
+{% endif %}
+
+<section class="nvy-note">
+	<div class="nvy-note-text">
+		<div class="nvy-eyebrow">The Navyaa Note</div>
+		<p class="nvy-serif quote">&ldquo;Sometimes closure is just another word for wanting the other person to agree with your version of the ending.&rdquo;</p>
+		<div class="nvy-sans" style="font-size:13px; color:#77736D;">&mdash; Navyaa</div>
+	</div>
+	<svg width="150" height="200" viewBox="0 0 150 200" style="flex-shrink:0;">
+		<path d="M75 20 C75 80 60 120 75 190" stroke="#3F4738" stroke-width="1.5" fill="none"/>
+		<path d="M75 55 C55 45 40 50 30 65" stroke="#3F4738" stroke-width="1.5" fill="none"/>
+		<ellipse cx="30" cy="65" rx="14" ry="7" fill="#3F4738" opacity="0.75" transform="rotate(-25 30 65)"/>
+		<path d="M75 90 C95 80 110 85 120 100" stroke="#3F4738" stroke-width="1.5" fill="none"/>
+		<ellipse cx="120" cy="100" rx="15" ry="7.5" fill="#3F4738" opacity="0.75" transform="rotate(25 120 100)"/>
+	</svg>
+</section>
+
+<section class="nvy-split">
+	<div class="nvy-most-read">
+		<div class="nvy-eyebrow">What People Are Reading</div>
+		<div>
+			{% for p in mostRead %}
+			<a class="nvy-most-read-row" href="{{ p.url }}">
+				<div class="num">{{ loop.index | pad2 }}</div>
+				<div class="title">{{ p.data.title }}</div>
+				<div class="nvy-tag">{{ p.data.pillar }}</div>
+			</a>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="nvy-why">
+		<div class="scrim"></div>
+		<div class="nvy-eyebrow" style="color:#B5A99A;">Why Navyaa Exists</div>
+		<h2 class="nvy-serif">For the thoughts we rarely say out loud.</h2>
+		<a href="/about/" class="nvy-sans" style="color:#F7F4EE; font-size:13px; border-bottom:1px solid #F7F4EE; padding-bottom:2px; width:fit-content;">Read our story &rarr;</a>
+	</div>
+</section>
+
+<section id="newsletter" class="nvy-newsletter">
+	<div class="nvy-newsletter-img" style="background:linear-gradient(150deg,#151515 0%,#3F4738 100%);"></div>
+	<div class="nvy-newsletter-form">
+		<div class="nvy-eyebrow" style="color:#E9DDD5;">Join Navyaa</div>
+		<h2 class="nvy-serif">Get the Navyaa Letter</h2>
+		<p>One thoughtful email. No noise.</p>
+		<form class="nvy-newsletter-row" method="post" target="_blank">
+			<input type="email" name="EMAIL" placeholder="Your email address" required>
+			<button type="submit" class="nvy-btn" style="background:#F7F4EE; color:#151515;">SUBSCRIBE</button>
+		</form>
+	</div>
+</section>

@@ -1,0 +1,33 @@
+---
+layout: base.njk
+---
+<div class="nvy-page-hero">
+	<div class="nvy-eyebrow">Start Here</div>
+	<h1 class="nvy-serif">{{ title }}</h1>
+	{% if excerpt %}<p class="nvy-sans" style="font-size:16px; color:#77736D; max-width:480px;">{{ excerpt }}</p>{% endif %}
+</div>
+
+{% if paths and paths.length %}
+<div class="nvy-path-list">
+	{% for item in paths %}
+	<a href="{{ item.href }}" class="nvy-path-row">
+		<span class="title">{{ item.label }}</span>
+		<span class="arrow">&rarr;</span>
+	</a>
+	{% endfor %}
+</div>
+{% else %}
+<div class="nvy-article-body nvy-sans" style="text-align:center;">
+	{{ content | safe }}
+</div>
+{% endif %}
+
+<section id="newsletter" style="background:#E9DDD5; padding:64px 56px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center;">
+	<div class="nvy-eyebrow">Join Navyaa</div>
+	<h2 class="nvy-serif">Get the Navyaa Letter</h2>
+	<p class="nvy-sans" style="color:#77736D;">One thoughtful email. No noise.</p>
+	<form class="nvy-newsletter-row" method="post" target="_blank" style="justify-content:center;">
+		<input type="email" name="EMAIL" placeholder="Your email address" required>
+		<button type="submit" class="nvy-btn">SUBSCRIBE</button>
+	</form>
+</section>

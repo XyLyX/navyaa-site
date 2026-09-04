@@ -1,0 +1,56 @@
+---
+layout: base.njk
+---
+{% set moods = [mood] %}
+{% if secondary_mood %}{% set moods = [mood, secondary_mood] %}{% endif %}
+
+<div class="nvy-article-header">
+	{% if pillar %}<div class="nvy-tag"><a href="/{{ pillar | slugify }}/" class="nvy-link">{{ pillar }}</a></div>{% endif %}
+	<h1 class="nvy-serif">{{ title }}</h1>
+	{% if subhead %}<p class="subhead">{{ subhead }}</p>{% endif %}
+	<div class="nvy-sans" style="font-size:13px; letter-spacing:0.5px; color:#77736D;">
+		{{ date | dateFmt("LLLL d, yyyy") | upper }} &middot; {{ content | readingTime }} MIN READ
+		{% for m in moods %}<span class="nvy-mood-chip" style="margin-left:10px;">{{ m }}</span>{% endfor %}
+	</div>
+</div>
+
+{% if image %}
+<div class="nvy-article-hero">
+	<img src="{{ image }}" alt="{{ title }}">
+</div>
+{% endif %}
+
+<div class="nvy-article-body nvy-sans">
+	{{ content | safe }}
+</div>
+
+{% if featured_quote %}
+<div class="nvy-more">
+	<blockquote class="nvy-serif" style="font-size:24px; font-style:italic; line-height:1.5; border-left:3px solid #6E3035; padding-left:24px; margin:0;">&ldquo;{{ featured_quote }}&rdquo;</blockquote>
+</div>
+{% endif %}
+
+<div class="nvy-more">
+	<div class="divider"></div>
+	<div class="nvy-eyebrow" style="margin-bottom:20px;">More From Navyaa</div>
+	<div style="display:flex; flex-direction:column; gap:14px;">
+		{% set related = collections.postsByPillar[pillar] | default([]) %}
+		{% set n = 0 %}
+		{% for r in related %}
+			{% if r.data.slug != slug and n < 3 %}
+				{% set n = n + 1 %}
+				<a href="{{ r.url }}" class="nvy-link nvy-serif" style="font-size:19px;">&rarr; {{ r.data.title }}</a>
+			{% endif %}
+		{% endfor %}
+	</div>
+</div>
+
+<section id="newsletter" class="nvy-newsletter-form" style="background:#6E3035; padding:56px; align-items:center; text-align:center;">
+	<div class="nvy-eyebrow" style="color:#E9DDD5;">Join Navyaa</div>
+	<h2 class="nvy-serif" style="color:#F7F4EE;">Get the Navyaa Letter</h2>
+	<p>One thoughtful email. No noise.</p>
+	<form class="nvy-newsletter-row" method="post" target="_blank" style="justify-content:center;">
+		<input type="email" name="EMAIL" placeholder="Your email address" required>
+		<button type="submit" class="nvy-btn" style="background:#F7F4EE; color:#151515;">SUBSCRIBE</button>
+	</form>
+</section>

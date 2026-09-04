@@ -1,0 +1,32 @@
+---
+layout: base.njk
+---
+<div class="nvy-page-hero">
+	<div class="nvy-eyebrow">About Navyaa</div>
+	<h1 class="nvy-serif">{{ title }}</h1>
+</div>
+
+<div class="nvy-philosophy nvy-serif">
+	{{ content | safe }}
+</div>
+
+{% if image %}
+<div class="nvy-portrait">
+	<img src="{{ image }}" alt="{{ title }}">
+</div>
+{% endif %}
+
+<div class="nvy-cta-band">
+	<h2 class="nvy-serif">That is the brand.</h2>
+	<a href="/start-here/" class="nvy-btn">START HERE &rarr;</a>
+</div>
+
+<section id="newsletter" style="background:#E9DDD5; padding:56px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center;">
+	<div class="nvy-eyebrow">Join Navyaa</div>
+	<h2 class="nvy-serif">Get the Navyaa Letter</h2>
+	<p class="nvy-sans" style="color:#77736D;">One thoughtful email. No noise.</p>
+	<form class="nvy-newsletter-row" method="post" target="_blank" style="justify-content:center;">
+		<input type="email" name="EMAIL" placeholder="Your email address" required>
+		<button type="submit" class="nvy-btn">SUBSCRIBE</button>
+	</form>
+</section>

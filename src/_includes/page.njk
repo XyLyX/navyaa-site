@@ -1,0 +1,12 @@
+---
+layout: base.njk
+---
+<div class="nvy-page-hero">
+	<h1 class="nvy-serif">{{ title }}</h1>
+</div>
+{% if image %}
+<div class="nvy-portrait"><img src="{{ image }}" alt="{{ title }}"></div>
+{% endif %}
+<div class="nvy-article-body nvy-sans">
+	{{ content | safe }}
+</div>

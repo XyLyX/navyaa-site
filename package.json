@@ -1,0 +1,15 @@
+{
+  "name": "navyaa-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Navyaa — essays on Love, Self, Life, Soul & Unfiltered. Static site (Eleventy) + Decap CMS + Netlify Functions.",
+  "scripts": {
+    "build": "eleventy",
+    "start": "eleventy --serve"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "@netlify/functions": "^6.0.0",
+    "@types/node": "^26.4.1"
+  }
+}

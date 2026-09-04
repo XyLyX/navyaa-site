@@ -1,0 +1,250 @@
+[build]
+  command = "npm run build"
+  publish = "_site"
+  functions = "netlify/functions"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+
+[[redirects]]
+  from = "/2025/12/04/why-we-stay-in-relationships-long/"
+  to = "/why-we-stay-in-relationships-long/"
+  status = 301
+
+[[redirects]]
+  from = "/2025/12/05/the-5-signs-youre-healing-without-even-noticing/"
+  to = "/the-5-signs-youre-healing-without-even-noticing/"
+  status = 301
+
+[[redirects]]
+  from = "/2025/12/06/stop-chasing-closure-heres-what-you-actually-need/"
+  to = "/stop-chasing-closure-heres-what-you-actually-need/"
+  status = 301
+
+[[redirects]]
+  from = "/2025/12/07/when-love-feels-heavy-understanding-emotional-burnout/"
+  to = "/when-love-feels-heavy-understanding-emotional-burnout/"
+  status = 301
+
+[[redirects]]
+  from = "/2025/12/09/heal-your-relationships-identify-and-transform-patterns/"
+  to = "/heal-your-relationships-identify-and-transform-patterns/"
+  status = 301
+
+[[redirects]]
+  from = "/2025/12/17/the-hidden-struggles-of-quiet-surrender/"
+  to = "/the-hidden-struggles-of-quiet-surrender/"
+  status = 301
+
+[[redirects]]
+  from = "/2025/12/21/understanding-why-people-pull-away-in-relationships/"
+  to = "/understanding-why-people-pull-away-in-relationships/"
+  status = 301
+
+[[redirects]]
+  from = "/2025/12/22/silent-strength-embracing-inner-pain/"
+  to = "/silent-strength-embracing-inner-pain/"
+  status = 301
+
+[[redirects]]
+  from = "/2025/12/23/understanding-the-loneliness-of-self-growth/"
+  to = "/understanding-the-loneliness-of-self-growth/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/01/embracing-2026-intentions-over-resolutions/"
+  to = "/embracing-2026-intentions-over-resolutions/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/02/embracing-authenticity-the-courage-to-be-real/"
+  to = "/embracing-authenticity-the-courage-to-be-real/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/05/the-paradox-of-body-and-soul-exploring-existence/"
+  to = "/the-paradox-of-body-and-soul-exploring-existence/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/07/kafkas-insight-time-and-authenticity-in-relationships/"
+  to = "/kafkas-insight-time-and-authenticity-in-relationships/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/07/managing-pain-the-burden-of-public-perception/"
+  to = "/managing-pain-the-burden-of-public-perception/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/08/from-average-to-extraordinary-a-mindset-shift/"
+  to = "/from-average-to-extraordinary-a-mindset-shift/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/09/finding-clarity-in-a-noisy-world-my-path-to-intentional-living/"
+  to = "/finding-clarity-in-a-noisy-world-my-path-to-intentional-living/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/09/the-gap-between-who-you-are-and-who-you-want-to-be/"
+  to = "/the-gap-between-who-you-are-and-who-you-want-to-be/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/14/exploring-timeless-poetic-paradoxes/"
+  to = "/exploring-timeless-poetic-paradoxes/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/16/if-it-wasnt-this-then-it-would-be-something-else/"
+  to = "/if-it-wasnt-this-then-it-would-be-something-else/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/16/why-happiness-is-never-truly-free/"
+  to = "/why-happiness-is-never-truly-free/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/17/exploring-the-metaphors-of-paper-wings-song/"
+  to = "/exploring-the-metaphors-of-paper-wings-song/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/01/24/exploring-the-spiritual-depth-of-kalank/"
+  to = "/exploring-the-spiritual-depth-of-kalank/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/15/dare-to-dream-embracing-life-beyond-comfort-zones/"
+  to = "/dare-to-dream-embracing-life-beyond-comfort-zones/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/13/prioritizing-self-care-showing-up-for-yourself/"
+  to = "/prioritizing-self-care-showing-up-for-yourself/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/14/the-courage-to-let-go-embracing-lifes-kites/"
+  to = "/the-courage-to-let-go-embracing-lifes-kites/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/12/understanding-the-split-navigating-dual-selves-in-our-lives/"
+  to = "/understanding-the-split-navigating-dual-selves-in-our-lives/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/12/the-masks-we-wear-understanding-hidden-battles/"
+  to = "/the-masks-we-wear-understanding-hidden-battles/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/17/why-rocks-would-envy-your-worst-day/"
+  to = "/why-rocks-would-envy-your-worst-day/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/18/the-weight-we-carry-finding-light-in-the-shadows-of-ambition/"
+  to = "/the-weight-we-carry-finding-light-in-the-shadows-of-ambition/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/03/13/the-art-of-the-resilient-smile-finding-meaning-in-lifes-ebbs-and-flows/"
+  to = "/the-art-of-the-resilient-smile-finding-meaning-in-lifes-ebbs-and-flows/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/03/15/the-system-your-money-and-reality-wake-up-before-everything-turns-to-ash/"
+  to = "/the-system-your-money-and-reality-wake-up-before-everything-turns-to-ash/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/03/11/the-gift-of-being-temporary-on-love-loss-and-leaving-a-mark/"
+  to = "/the-gift-of-being-temporary-on-love-loss-and-leaving-a-mark/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/03/10/finding-freedom-in-letting-go/"
+  to = "/finding-freedom-in-letting-go/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/03/12/the-front-row-seat-to-your-downfall-why-i-fell-back/"
+  to = "/the-front-row-seat-to-your-downfall-why-i-fell-back/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/03/16/the-night-court/"
+  to = "/the-night-court/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/03/09/the-invisible-death-recognizing-internal-struggle/"
+  to = "/the-invisible-death-recognizing-internal-struggle/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/24/the-banquet-of-fifty-one-selves/"
+  to = "/the-banquet-of-fifty-one-selves/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/19/stop-waiting-express-what-matters-today/"
+  to = "/stop-waiting-express-what-matters-today/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/22/the-0-1-void-why-success-doesnt-always-feel-like-victory/"
+  to = "/the-0-1-void-why-success-doesnt-always-feel-like-victory/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/02/28/the-great-keema-matar-betrayal/"
+  to = "/the-great-keema-matar-betrayal/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/03/14/the-art-of-living-freely-a-vagabonds-perspective/"
+  to = "/the-art-of-living-freely-a-vagabonds-perspective/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/04/06/understanding-karma-through-a-spiritual-lens/"
+  to = "/understanding-karma-through-a-spiritual-lens/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/04/05/the-anatomy-of-a-midnight-goodbye-jawad-sheikhs-bhool-jaon/"
+  to = "/the-anatomy-of-a-midnight-goodbye-jawad-sheikhs-bhool-jaon/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/04/07/its-a-slow-death-isnt-it/"
+  to = "/its-a-slow-death-isnt-it/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/05/03/embracing-life-arrive-late-in-love-a-little-drunk/"
+  to = "/embracing-life-arrive-late-in-love-a-little-drunk/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/05/04/finding-stillness-in-a-chaotic-world/"
+  to = "/finding-stillness-in-a-chaotic-world/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/05/03/understanding-emotional-exhaustion-a-reflection-on-life-and-death/"
+  to = "/understanding-emotional-exhaustion-a-reflection-on-life-and-death/"
+  status = 301
+
+[[redirects]]
+  from = "/2026/05/04/the-power-of-silence-in-emotional-healing/"
+  to = "/the-power-of-silence-in-emotional-healing/"
+  status = 301

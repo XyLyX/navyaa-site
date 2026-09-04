@@ -1,0 +1,130 @@
+backend:
+  name: github
+  repo: XyLyX/navyaa-site
+  branch: main
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
+
+publish_mode: editorial_workflow
+media_folder: "src/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "posts"
+    label: "Essays"
+    folder: "src/posts"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    identifier_field: title
+    summary: "{{title}} — {{pillar}}"
+    sortable_fields: ["date", "title", "pillar"]
+    view_filters:
+      - label: "Love"
+        field: pillar
+        pattern: "Love"
+      - label: "Self"
+        field: pillar
+        pattern: "Self"
+      - label: "Life"
+        field: pillar
+        pattern: "Life"
+      - label: "Soul"
+        field: pillar
+        pattern: "Soul"
+      - label: "Unfiltered"
+        field: pillar
+        pattern: "Unfiltered"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "URL slug", name: "slug", widget: "string", hint: "Used in the web address, e.g. /this-is-the-slug/" }
+      - { label: "Featured image", name: "image", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Navyaa Intelligence"
+        name: "ai_assist"
+        widget: "navyaa-ai"
+        required: false
+        hint: "Click Analyze, read the suggestions, then set the fields below yourself — nothing here publishes automatically."
+      - label: "Pillar"
+        name: "pillar"
+        widget: "select"
+        options: ["Love", "Self", "Life", "Soul", "Unfiltered"]
+      - label: "Mood"
+        name: "mood"
+        widget: "select"
+        options: ["Melancholic", "Nostalgic", "Romantic", "Reflective", "Contemplative", "Hopeful", "Restless", "Angry", "Playful", "Peaceful"]
+      - label: "Secondary mood"
+        name: "secondary_mood"
+        widget: "select"
+        options: ["Melancholic", "Nostalgic", "Romantic", "Reflective", "Contemplative", "Hopeful", "Restless", "Angry", "Playful", "Peaceful"]
+        required: false
+      - { label: "Emotional intensity (1-10)", name: "intensity", widget: "number", min: 1, max: 10, default: 5 }
+      - { label: "Excerpt (shown on cards)", name: "excerpt", widget: "text" }
+      - { label: "Featured quote (optional, pulled from the essay)", name: "featured_quote", widget: "string", required: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "SEO title", name: "seo_title", widget: "string", required: false }
+      - { label: "Meta description", name: "meta_description", widget: "text", required: false }
+      - { label: "Feature on homepage", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "Draft (hide from the live site)", name: "draft", widget: "boolean", default: false }
+
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "About"
+        name: "about"
+        file: "src/pages/about.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Portrait image", name: "image", widget: "image", required: false }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Start Here"
+        name: "start-here"
+        file: "src/pages/start-here.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Intro line", name: "excerpt", widget: "string", required: false }
+          - label: "Path cards"
+            name: "paths"
+            widget: "list"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Link", name: "href", widget: "string" }
+          - { label: "Body (used only if no path cards are set)", name: "body", widget: "markdown", required: false }
+      - label: "Contact"
+        name: "contact"
+        file: "src/pages/contact.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Brand Story"
+        name: "brand-story"
+        file: "src/pages/brand-story.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Disclaimer"
+        name: "disclaimer"
+        file: "src/pages/disclaimer.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Privacy Policy"
+        name: "privacy-policy"
+        file: "src/pages/privacy-policy.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Terms & Conditions"
+        name: "terms-conditions"
+        file: "src/pages/terms-conditions.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Media Kit"
+        name: "media-kit-introduction"
+        file: "src/pages/media-kit-introduction.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
