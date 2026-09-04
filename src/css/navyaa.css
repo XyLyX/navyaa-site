@@ -64,7 +64,10 @@ button, input { font-family: 'DM Sans', Helvetica, Arial, sans-serif; }
 .nvy-footer-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 24px; }
 .nvy-footer-nav { display: flex; gap: 24px; flex-wrap: wrap; }
 .nvy-footer-nav a { font-size: 13px; color: #77736D; }
+.nvy-footer-social-col { display: flex; flex-direction: column; gap: 14px; }
 .nvy-footer-social { display: flex; gap: 16px; }
+.nvy-footer-contact { font-size: 13px; color: #77736D; }
+.nvy-footer-contact:hover { color: #6E3035; }
 .nvy-footer-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #77736D; padding-top: 24px; border-top: 1px solid #D8D1C8; }
 
 /* ---------- Hero ---------- */
