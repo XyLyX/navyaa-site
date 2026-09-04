@@ -9,23 +9,65 @@
   </style>
 </head>
 <body>
-  <!-- Decap CMS (the actively-maintained fork of Netlify CMS) -->
-  <script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js"></script>
+  <!-- Decap CMS (the actively-maintained fork of Netlify CMS).
+       Pinned to an exact version rather than a floating range (the old
+       "^3.3.3" let unpkg silently serve whatever the newest 3.x release
+       was on every page load — it had already drifted to 3.16.0 with no
+       warning). Bump this deliberately when you want to upgrade. -->
+  <script src="https://unpkg.com/decap-cms@3.16.0/dist/decap-cms.js"></script>
 
   <script>
     // ---------------------------------------------------------------
     // Navyaa Intelligence widget: an "Analyze with AI" panel that calls
     // our Netlify Function (which calls OpenAI) and shows suggestions
     // for the writer to read and apply themselves to the real fields
-    // below (Pillar, Mood, Excerpt, Tags, etc). It never writes those
-    // fields for you and nothing publishes automatically — you always
-    // review and set them yourself before hitting Publish.
+    // below (Pillar, Mood, Excerpt, Tags, Slug, Image prompt, etc). It
+    // never writes those fields for you and nothing publishes
+    // automatically — you always review and set them yourself before
+    // hitting Publish.
     // ---------------------------------------------------------------
     var h = window.h; // Decap CMS exposes createElement as `h` via CreateReactClass/React under the hood
 
+    function copyToClipboard(text) {
+      if (!text) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(function () {});
+      }
+    }
+
+    // On a brand-new, not-yet-saved entry, Decap doesn't always sync your
+    // typed values into this widget's `entry` prop in time for Analyze to
+    // read them — even though the title/body are visibly filled in. As a
+    // fallback, read the actual on-screen field directly by its label so
+    // Analyze works before your first Save too.
+    function getFieldValueByLabel(labelText) {
+      var labels = Array.prototype.slice.call(document.querySelectorAll("label"));
+      var label = labels.filter(function (l) {
+        return l.textContent.trim().toLowerCase().indexOf(labelText.toLowerCase()) === 0;
+      })[0];
+      if (!label) return "";
+
+      var forId = label.getAttribute("for");
+      var el = forId ? document.getElementById(forId) : null;
+      if (el) {
+        if ("value" in el) return el.value || "";
+        if (el.textContent) return el.textContent;
+      }
+
+      // Rich text / markdown editors: the labeled id doesn't land on a
+      // real element, so look for a Slate editor or textarea near the label.
+      var node = label.closest("div");
+      for (var i = 0; i < 5 && node; i++) {
+        var editable = node.querySelector('[data-slate-editor="true"], textarea');
+        if (editable) return ("value" in editable ? editable.value : editable.textContent) || "";
+        node = node.parentElement;
+      }
+      return "";
+    }
+
     var NavyaaAIControl = window.createClass({
       getInitialState: function () {
-        return { loading: false, error: "", result: null };
+        return { loading: false, error: "", result: null, copied: "" };
       },
       analyze: function () {
         var self = this;
@@ -33,12 +75,15 @@
         var title = (entry && entry.getIn(["data", "title"])) || "";
         var body = (entry && entry.getIn(["data", "body"])) || "";
 
+        if (!title) title = getFieldValueByLabel("Title");
+        if (!body) body = getFieldValueByLabel("Body");
+
         if (!title && !body) {
           self.setState({ error: "Write a title or some content first.", result: null });
           return;
         }
 
-        self.setState({ loading: true, error: "", result: null });
+        self.setState({ loading: true, error: "", result: null, copied: "" });
 
         fetch("/api/ai-suggest", {
           method: "POST",
@@ -58,12 +103,29 @@
             self.setState({ loading: false, error: "Request failed: " + err.message });
           });
       },
+      copy: function (field, text) {
+        copyToClipboard(text);
+        var self = this;
+        self.setState({ copied: field });
+        setTimeout(function () { self.setState({ copied: "" }); }, 1500);
+      },
       render: function () {
+        var self = this;
         var state = this.state;
         var r = state.result;
 
         var box = { border: "1px solid #D8D1C8", borderRadius: "4px", padding: "16px", marginTop: "10px", background: "#F7F4EE", fontSize: "13px", lineHeight: "1.6" };
         var btn = { background: "#6E3035", color: "#F7F4EE", border: "none", borderRadius: "3px", padding: "10px 18px", fontSize: "13px", cursor: "pointer" };
+        var copyBtn = { background: "none", color: "#6E3035", border: "1px solid #6E3035", borderRadius: "3px", padding: "2px 8px", fontSize: "11px", cursor: "pointer", marginLeft: "8px" };
+
+        function copyButton(field, text) {
+          if (!text) return null;
+          return h("button", {
+            type: "button",
+            style: copyBtn,
+            onClick: function () { self.copy(field, text); },
+          }, state.copied === field ? "Copied" : "Copy");
+        }
 
         var children = [
           h("button", { type: "button", style: btn, onClick: this.analyze, disabled: state.loading },
@@ -81,11 +143,17 @@
               h("div", { key: "cat" }, [h("strong", null, "Pillar: "), r.category || "—"]),
               h("div", { key: "mood" }, [h("strong", null, "Mood: "), r.mood || "—", r.secondary_mood ? " / " + r.secondary_mood : ""]),
               h("div", { key: "int" }, [h("strong", null, "Intensity: "), r.intensity != null ? r.intensity : "—"]),
+              h("div", { key: "slug" }, [h("strong", null, "URL slug: "), r.slug || "—", copyButton("slug", r.slug)]),
               h("div", { key: "exc" }, [h("strong", null, "Excerpt: "), r.excerpt || "—"]),
               h("div", { key: "seo" }, [h("strong", null, "SEO title: "), r.seo_title || "—"]),
               h("div", { key: "meta" }, [h("strong", null, "Meta description: "), r.meta_description || "—"]),
               h("div", { key: "tags" }, [h("strong", null, "Tags: "), (r.tags || []).join(", ") || "—"]),
               h("div", { key: "quote" }, [h("strong", null, "Featured quote: "), r.featured_quote || "—"]),
+              h("div", { key: "img", style: { marginTop: "8px" } }, [
+                h("strong", null, "Image prompt: "),
+                copyButton("image_prompt", r.image_prompt),
+                h("div", { style: { marginTop: "4px", color: "#3A3733" } }, r.image_prompt || "—"),
+              ]),
               h("div", { key: "note", style: { marginTop: "10px", color: "#77736D", fontStyle: "italic" } },
                 "Copy whichever of these you agree with into the fields below. Nothing here is applied automatically."
               ),
