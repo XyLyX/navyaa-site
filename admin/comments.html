@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navyaa — Comment Moderation</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --cream: #F7F4EE; --charcoal: #151515; --burgundy: #6E3035;
+    --olive: #3F4738; --taupe: #77736D; --rose: #E9DDD5; --border: #D8D1C8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--cream); color: var(--charcoal);
+    font-family: 'DM Sans', Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 96px; }
+  h1 {
+    font-family: Georgia, 'Cormorant Garamond', serif; font-size: 32px;
+    margin: 0 0 8px;
+  }
+  .sub { color: var(--taupe); font-size: 14px; margin: 0 0 32px; }
+
+  .key-bar {
+    display: flex; gap: 10px; margin-bottom: 32px; flex-wrap: wrap;
+    background: #fff; border: 1px solid var(--border); padding: 18px; border-radius: 4px;
+  }
+  .key-bar input[type="password"], .key-bar input[type="text"] {
+    flex: 1 1 240px; padding: 11px 14px; border: 1px solid var(--border);
+    border-radius: 2px; font-size: 14px; background: var(--cream); color: var(--charcoal);
+  }
+  .key-bar input:focus { outline: none; border-color: var(--burgundy); }
+  button {
+    cursor: pointer; border: none; border-radius: 2px; padding: 11px 20px;
+    font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase;
+    background: var(--burgundy); color: var(--cream); transition: opacity 0.15s;
+  }
+  button:hover { opacity: 0.9; }
+  button.ghost { background: none; border: 1px solid var(--border); color: var(--charcoal); }
+  button:disabled { opacity: 0.5; cursor: default; }
+
+  #status { font-size: 13px; margin-bottom: 20px; min-height: 18px; }
+  #status.err { color: var(--burgundy); }
+  #status.ok { color: var(--olive); }
+
+  .filter-row { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; }
+  .filter-row input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 2px; font-size: 14px; }
+  .count { font-size: 13px; color: var(--taupe); white-space: nowrap; }
+
+  .comment-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 4px;
+    padding: 18px 20px; margin-bottom: 14px;
+  }
+  .comment-card .top-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .comment-card .who { font-weight: 600; font-size: 14.5px; }
+  .comment-card .meta { font-size: 12px; color: var(--taupe); }
+  .comment-card .slug-tag {
+    display: inline-block; font-size: 11px; letter-spacing: 0.5px;
+    background: var(--rose); color: var(--burgundy); padding: 2px 9px; border-radius: 12px;
+    margin-left: 8px;
+  }
+  .comment-card .text {
+    font-size: 15px; line-height: 1.7; white-space: pre-wrap; margin: 0 0 14px;
+  }
+  .comment-card .actions { display: flex; gap: 8px; }
+  .comment-card .actions button.danger {
+    background: none; border: 1px solid var(--burgundy); color: var(--burgundy);
+    padding: 7px 14px; font-size: 12px;
+  }
+  .comment-card .actions button.danger:hover { background: var(--burgundy); color: var(--cream); }
+  .comment-card.removing { opacity: 0.4; pointer-events: none; }
+
+  .empty { color: var(--taupe); font-style: italic; padding: 40px 0; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Comment Moderation</h1>
+  <p class="sub">View and remove comments across every essay on Navyaa.</p>
+
+  <div class="key-bar">
+    <input type="password" id="adminKey" placeholder="Admin key" autocomplete="off">
+    <button type="button" id="loadBtn">Load comments</button>
+  </div>
+
+  <div id="status"></div>
+
+  <div class="filter-row" id="filterRow" style="display:none;">
+    <input type="text" id="filterInput" placeholder="Filter by slug or name…">
+    <span class="count" id="countLabel"></span>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<script>
+(function () {
+  var keyInput = document.getElementById("adminKey");
+  var loadBtn = document.getElementById("loadBtn");
+  var statusEl = document.getElementById("status");
+  var listEl = document.getElementById("list");
+  var filterRow = document.getElementById("filterRow");
+  var filterInput = document.getElementById("filterInput");
+  var countLabel = document.getElementById("countLabel");
+
+  var allComments = [];
+
+  // Remember the key for this browser tab only (not persisted to disk),
+  // so re-filtering/re-deleting doesn't require retyping it every time.
+  try {
+    var saved = sessionStorage.getItem("nvy_admin_key");
+    if (saved) keyInput.value = saved;
+  } catch (e) {}
+
+  function setStatus(msg, cls) {
+    statusEl.textContent = msg || "";
+    statusEl.className = cls || "";
+  }
+
+  function escapeHtml(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function formatDate(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleString();
+    } catch (e) { return iso || ""; }
+  }
+
+  function render() {
+    var q = (filterInput.value || "").trim().toLowerCase();
+    var filtered = !q ? allComments : allComments.filter(function (c) {
+      return (c.slug || "").toLowerCase().indexOf(q) !== -1 ||
+        (c.name || "").toLowerCase().indexOf(q) !== -1;
+    });
+
+    countLabel.textContent = filtered.length + " comment" + (filtered.length === 1 ? "" : "s");
+
+    if (!filtered.length) {
+      listEl.innerHTML = '<p class="empty">No comments to show.</p>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(function (c) {
+      return '<div class="comment-card" data-id="' + escapeHtml(c.id) + '" data-slug="' + escapeHtml(c.slug) + '">' +
+        '<div class="top-row">' +
+          '<div><span class="who">' + escapeHtml(c.name) + '</span><span class="slug-tag">' + escapeHtml(c.slug) + '</span></div>' +
+          '<span class="meta">' + formatDate(c.date) + '</span>' +
+        '</div>' +
+        '<p class="text">' + escapeHtml(c.text) + '</p>' +
+        '<div class="actions"><button type="button" class="danger">Delete</button></div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function loadComments() {
+    var key = keyInput.value.trim();
+    if (!key) { setStatus("Enter the admin key first.", "err"); return; }
+    try { sessionStorage.setItem("nvy_admin_key", key); } catch (e) {}
+
+    setStatus("Loading…");
+    loadBtn.disabled = true;
+
+    fetch("/api/comments?admin=1", { headers: { "x-admin-key": key } })
+      .then(function (r) {
+        if (r.status === 401) throw new Error("Wrong admin key.");
+        if (!r.ok) throw new Error("Failed to load (status " + r.status + ").");
+        return r.json();
+      })
+      .then(function (data) {
+        allComments = data.comments || [];
+        filterRow.style.display = allComments.length ? "flex" : "none";
+        setStatus(allComments.length ? "" : "No comments yet.", "");
+        render();
+      })
+      .catch(function (err) {
+        setStatus(err.message || "Something went wrong.", "err");
+        listEl.innerHTML = "";
+        filterRow.style.display = "none";
+      })
+      .finally(function () {
+        loadBtn.disabled = false;
+      });
+  }
+
+  function deleteComment(card) {
+    var key = keyInput.value.trim();
+    var id = card.getAttribute("data-id");
+    var slug = card.getAttribute("data-slug");
+    if (!key || !id || !slug) return;
+    if (!window.confirm("Delete this comment? This can't be undone.")) return;
+
+    card.classList.add("removing");
+
+    fetch("/api/comments", {
+      method: "DELETE",
+      headers: { "content-type": "application/json", "x-admin-key": key },
+      body: JSON.stringify({ slug: slug, id: id }),
+    })
+      .then(function (r) {
+        if (r.status === 401) throw new Error("Wrong admin key.");
+        if (!r.ok) throw new Error("Delete failed (status " + r.status + ").");
+        return r.json();
+      })
+      .then(function () {
+        allComments = allComments.filter(function (c) { return c.id !== id; });
+        render();
+        setStatus("Comment deleted.", "ok");
+      })
+      .catch(function (err) {
+        card.classList.remove("removing");
+        setStatus(err.message || "Delete failed.", "err");
+      });
+  }
+
+  loadBtn.addEventListener("click", loadComments);
+  keyInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") loadComments();
+  });
+  filterInput.addEventListener("input", render);
+  listEl.addEventListener("click", function (e) {
+    var btn = e.target.closest("button.danger");
+    if (!btn) return;
+    deleteComment(btn.closest(".comment-card"));
+  });
+
+  // Auto-load if a key was already remembered for this tab.
+  if (keyInput.value) loadComments();
+})();
+</script>
+</body>
+</html>

@@ -153,6 +153,54 @@ button, input { font-family: 'DM Sans', Helvetica, Arial, sans-serif; }
 .nvy-more { max-width: 720px; margin: 0 auto; padding: 24px 56px 64px; }
 .nvy-more .divider { height: 1px; background: #D8D1C8; margin-bottom: 32px; }
 
+/* ---------- Engagement: Like / Share / Comments ---------- */
+.nvy-engage {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: 20px; padding: 28px 0; border-top: 1px solid #D8D1C8; border-bottom: 1px solid #D8D1C8;
+}
+.nvy-like-btn {
+  display: inline-flex; align-items: center; gap: 9px; background: none; cursor: pointer;
+  border: 1px solid #D8D1C8; border-radius: 24px; padding: 10px 18px 10px 16px;
+  font-size: 13px; color: #151515; transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.nvy-like-btn:hover { border-color: #6E3035; }
+.nvy-like-btn svg { stroke: #6E3035; fill: none; transition: fill 0.15s; }
+.nvy-like-btn.is-liked { background: #6E3035; border-color: #6E3035; color: #F7F4EE; }
+.nvy-like-btn.is-liked svg { fill: #F7F4EE; stroke: #F7F4EE; }
+.nvy-share { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.nvy-share-label { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: #77736D; margin-right: 2px; }
+.nvy-share-icon {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%; border: 1px solid #D8D1C8; background: none;
+  color: #151515; cursor: pointer; transition: border-color 0.15s;
+}
+.nvy-share-icon:hover { border-color: #6E3035; color: #6E3035; }
+.nvy-share-icon svg { stroke: currentColor; }
+.nvy-share-icon::after {
+  content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  background: #151515; color: #F7F4EE; font-size: 11px; padding: 4px 9px; border-radius: 3px;
+  white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s;
+}
+.nvy-share-icon.show-tip::after { opacity: 1; }
+
+.nvy-comments-list { display: flex; flex-direction: column; gap: 22px; margin-bottom: 30px; }
+.nvy-comment { border-bottom: 1px solid #D8D1C8; padding-bottom: 18px; }
+.nvy-comment .name { font-size: 14px; font-weight: 600; color: #151515; }
+.nvy-comment .date { font-size: 12px; color: #77736D; margin-left: 8px; }
+.nvy-comment .text { font-size: 15px; line-height: 1.7; color: #151515; margin-top: 6px; white-space: pre-wrap; }
+.nvy-comments-empty { font-size: 14px; color: #77736D; font-style: italic; }
+.nvy-comment-form { display: flex; flex-direction: column; gap: 12px; max-width: 560px; }
+.nvy-comment-form input[type="text"], .nvy-comment-form textarea {
+  padding: 13px 16px; border: 1px solid #D8D1C8; border-radius: 2px; font-size: 14px;
+  background: #F7F4EE; color: #151515; font-family: 'DM Sans', Helvetica, Arial, sans-serif; resize: vertical;
+}
+.nvy-comment-form input[type="text"]:focus, .nvy-comment-form textarea:focus { outline: none; border-color: #6E3035; }
+.nvy-comment-form .nvy-btn { align-self: flex-start; }
+.nvy-comment-form .nvy-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.nvy-comment-status { font-size: 13px; }
+.nvy-comment-status.ok { color: #3F4738; }
+.nvy-comment-status.err { color: #6E3035; }
+
 /* ---------- Start Here / About ---------- */
 .nvy-page-hero { max-width: 760px; margin: 0 auto; padding: 88px 56px 40px; display: flex; flex-direction: column; gap: 20px; text-align: center; align-items: center; }
 .nvy-page-hero h1 { font-size: 46px; line-height: 1.25; }

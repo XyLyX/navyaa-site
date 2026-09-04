@@ -63,6 +63,9 @@ module.exports = function (eleventyConfig) {
   });
   eleventyConfig.addFilter("upper", (s) => String(s || "").toUpperCase());
   eleventyConfig.addFilter("pad2", (n) => String(n).padStart(2, "0"));
+  // Used to build share links (WhatsApp/X/Facebook/LinkedIn/email) directly
+  // in templates, so they work even before the page's JS has loaded.
+  eleventyConfig.addFilter("urlencode", (s) => encodeURIComponent(s || ""));
   eleventyConfig.addFilter("where", (arr, key, val) =>
     (arr || []).filter((item) => item.data[key] === val)
   );

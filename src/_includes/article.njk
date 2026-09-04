@@ -24,11 +24,63 @@ layout: base.njk
 	{{ content | safe }}
 </div>
 
+{% set shareUrl = "https://navyaa.blog" + page.url %}
+{% set shareTitle = title %}
+<div class="nvy-more">
+	<div class="nvy-engage nvy-sans" data-slug="{{ slug }}">
+		<button type="button" class="nvy-like-btn" aria-label="Like this essay">
+			<svg width="17" height="17" viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.4C.4 7.6 2.3 4 6 4c2.1 0 3.7 1.1 6 3.4C14.3 5.1 15.9 4 18 4c3.7 0 5.6 3.6 4 7.1-2.5 4.8-10 9.4-10 9.4z"/></svg>
+			<span class="nvy-like-count">0</span>
+		</button>
+		<div class="nvy-share">
+			<span class="nvy-share-label">Share</span>
+			<a class="nvy-share-icon" data-tip="WhatsApp" aria-label="Share on WhatsApp" target="_blank" rel="noopener"
+				href="https://wa.me/?text={{ (shareTitle + ' — ' + shareUrl) | urlencode }}">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M12 21a9 9 0 1 0-7.8-4.5L3 21l4.6-1.2A9 9 0 0 0 12 21z"/><path d="M8.5 8.5c0-.6.6-1 1-1s.8.1 1 .5c.3.5.9 1.9 1 2.1.1.3 0 .5-.2.8-.2.3-.4.5-.6.7-.2.2-.4.4-.2.8.2.4.9 1.5 1.9 2.4 1.3 1.2 2.3 1.5 2.7 1.7.4.2.6.1.8-.1.2-.2.9-1 1.1-1.4.2-.4.5-.3.8-.2.3.1 2 1 2.3 1.1.3.1.5.2.6.4.1.2.1.9-.2 1.7-.3.8-1.7 1.6-2.4 1.7-.6.1-1.4.2-4.5-1-3.7-1.5-6.1-5.2-6.3-5.5-.2-.3-1.5-2-1.5-3.7z"/></svg>
+			</a>
+			<a class="nvy-share-icon" data-tip="X" aria-label="Share on X" target="_blank" rel="noopener"
+				href="https://twitter.com/intent/tweet?text={{ shareTitle | urlencode }}&url={{ shareUrl | urlencode }}">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.7"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+			</a>
+			<a class="nvy-share-icon" data-tip="Facebook" aria-label="Share on Facebook" target="_blank" rel="noopener"
+				href="https://www.facebook.com/sharer/sharer.php?u={{ shareUrl | urlencode }}">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M14 9h3V5h-3c-2.2 0-4 1.8-4 4v2H7v4h3v7h4v-7h3l1-4h-4V9c0-.6.4-1 1-1z"/></svg>
+			</a>
+			<a class="nvy-share-icon" data-tip="LinkedIn" aria-label="Share on LinkedIn" target="_blank" rel="noopener"
+				href="https://www.linkedin.com/sharing/share-offsite/?url={{ shareUrl | urlencode }}">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="10" x2="8" y2="16"/><circle cx="8" cy="7" r="0.6"/><path d="M12 16v-4c0-1.5 1-2 2-2s2 0.5 2 2v4"/></svg>
+			</a>
+			<a class="nvy-share-icon" data-tip="Email" aria-label="Share by email"
+				href="mailto:?subject={{ shareTitle | urlencode }}&body={{ shareUrl | urlencode }}">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 6l8 7 8-7"/></svg>
+			</a>
+			<button type="button" class="nvy-share-icon nvy-copy-link" data-tip="Copy link" aria-label="Copy link" data-url="{{ shareUrl }}">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M9 12a4 4 0 0 0 5.7 0l2.3-2.3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M15 12a4 4 0 0 0-5.7 0l-2.3 2.3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+			</button>
+		</div>
+	</div>
+</div>
+
 {% if featured_quote %}
 <div class="nvy-more">
 	<blockquote class="nvy-serif" style="font-size:24px; font-style:italic; line-height:1.5; border-left:3px solid #6E3035; padding-left:24px; margin:0;">&ldquo;{{ featured_quote }}&rdquo;</blockquote>
 </div>
 {% endif %}
+
+<div class="nvy-more" id="comments">
+	<div class="divider"></div>
+	<div class="nvy-eyebrow" style="margin-bottom:20px;">Comments</div>
+	<div class="nvy-comments-list" data-slug="{{ slug }}">
+		<p class="nvy-comments-empty">Loading comments&hellip;</p>
+	</div>
+	<form class="nvy-comment-form" data-slug="{{ slug }}">
+		<input type="text" name="hp" class="nvy-hp" tabindex="-1" autocomplete="off">
+		<input type="text" name="name" placeholder="Your name" required maxlength="60">
+		<textarea name="text" placeholder="Share a thought&hellip;" required maxlength="2000" rows="4"></textarea>
+		<button type="submit" class="nvy-btn">Post Comment</button>
+		<span class="nvy-comment-status"></span>
+	</form>
+</div>
 
 <div class="nvy-more">
 	<div class="divider"></div>
@@ -54,3 +106,150 @@ layout: base.njk
 		<button type="submit" class="nvy-btn" style="background:#F7F4EE; color:#151515;">SUBSCRIBE</button>
 	</form>
 </section>
+
+<script>
+(function () {
+  var engage = document.querySelector(".nvy-engage");
+  if (!engage) return;
+  var slug = engage.getAttribute("data-slug");
+
+  // ---- Like ----
+  var likeBtn = engage.querySelector(".nvy-like-btn");
+  var likeCountEl = engage.querySelector(".nvy-like-count");
+  var likedKey = "nvy_liked_" + slug;
+
+  function setLikedState(liked) {
+    likeBtn.classList.toggle("is-liked", liked);
+  }
+
+  fetch("/api/like?slug=" + encodeURIComponent(slug))
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      likeCountEl.textContent = data.count || 0;
+      setLikedState(!!localStorage.getItem(likedKey));
+    })
+    .catch(function () {});
+
+  likeBtn.addEventListener("click", function () {
+    if (localStorage.getItem(likedKey)) return; // already liked from this browser
+    setLikedState(true);
+    likeCountEl.textContent = (parseInt(likeCountEl.textContent, 10) || 0) + 1;
+    fetch("/api/like", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ slug: slug }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (typeof data.count === "number") likeCountEl.textContent = data.count;
+        localStorage.setItem(likedKey, "1");
+      })
+      .catch(function () {
+        // Keep the optimistic UI even if the request failed silently —
+        // worst case the count is a bit off until the next page load.
+        localStorage.setItem(likedKey, "1");
+      });
+  });
+
+  // ---- Copy link ----
+  var copyBtn = engage.querySelector(".nvy-copy-link");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function () {
+      var url = copyBtn.getAttribute("data-url");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).catch(function () {});
+      }
+      copyBtn.classList.add("show-tip");
+      copyBtn.setAttribute("data-tip", "Copied!");
+      setTimeout(function () {
+        copyBtn.classList.remove("show-tip");
+        copyBtn.setAttribute("data-tip", "Copy link");
+      }, 1500);
+    });
+  }
+
+  // ---- Comments ----
+  var listEl = document.querySelector(".nvy-comments-list");
+  var form = document.querySelector(".nvy-comment-form");
+
+  function escapeHtml(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function formatDate(iso) {
+    try {
+      var d = new Date(iso);
+      var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+    } catch (e) { return ""; }
+  }
+
+  function renderComments(comments) {
+    if (!comments.length) {
+      listEl.innerHTML = '<p class="nvy-comments-empty">Be the first to share a thought.</p>';
+      return;
+    }
+    listEl.innerHTML = comments.map(function (c) {
+      return '<div class="nvy-comment">' +
+        '<span class="name">' + escapeHtml(c.name) + '</span>' +
+        '<span class="date">' + formatDate(c.date) + '</span>' +
+        '<div class="text">' + escapeHtml(c.text) + '</div>' +
+        '</div>';
+    }).join("");
+  }
+
+  if (listEl) {
+    fetch("/api/comments?slug=" + encodeURIComponent(slug))
+      .then(function (r) { return r.json(); })
+      .then(function (data) { renderComments(data.comments || []); })
+      .catch(function () {
+        listEl.innerHTML = '<p class="nvy-comments-empty">Couldn\'t load comments right now.</p>';
+      });
+  }
+
+  if (form) {
+    var statusEl = form.querySelector(".nvy-comment-status");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = form.name.value.trim();
+      var text = form.text.value.trim();
+      var hp = form.hp.value;
+      if (!name || !text) return;
+
+      statusEl.textContent = "Posting…";
+      statusEl.className = "nvy-comment-status";
+
+      fetch("/api/comments", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slug: slug, name: name, text: text, hp: hp }),
+      })
+        .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+        .then(function (res) {
+          if (!res.ok) {
+            statusEl.textContent = res.data.error || "Something went wrong.";
+            statusEl.className = "nvy-comment-status err";
+            return;
+          }
+          statusEl.textContent = "Posted.";
+          statusEl.className = "nvy-comment-status ok";
+          form.reset();
+          var empty = listEl.querySelector(".nvy-comments-empty");
+          if (empty) empty.remove();
+          var div = document.createElement("div");
+          div.className = "nvy-comment";
+          div.innerHTML = '<span class="name">' + escapeHtml(res.data.comment.name) + '</span>' +
+            '<span class="date">' + formatDate(res.data.comment.date) + '</span>' +
+            '<div class="text">' + escapeHtml(res.data.comment.text) + '</div>';
+          listEl.appendChild(div);
+        })
+        .catch(function () {
+          statusEl.textContent = "Network error — please try again.";
+          statusEl.className = "nvy-comment-status err";
+        });
+    });
+  }
+})();
+</script>
