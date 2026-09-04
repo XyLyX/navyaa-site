@@ -1,18 +1,19 @@
 ---
 title: The Solace and the Silent Theft of Time
 date: 2026-09-05
-slug: The Solace and the Silent Theft of Time
+slug: the-silent-theft-of-time
+image: /images/uploads/gemini_generated_image_cwrf6acwrf6acwrf.jpeg
 ai_assist: '{"category":"Life","mood":"Contemplative","secondary_mood":"Melancholic","intensity":7,"excerpt":"In
-  a world where time is both a thief and a healer, we must learn to inhabit
-  every moment fully, embracing both joy and pain.","seo_title":"Understanding
-  the Nature of Time","meta_description":"Explore the duality of time as both a
-  healer and a thief in our lives, urging us to embrace every
-  moment.","tags":["time","impermanence","mindfulness","presence"],"featured_quote":"Time
-  is not a patient host waiting for us to figure things
-  out.","slug":"the-solace-and-the-silent-theft","image_prompt":"Editorial,
-  literary-journal photography of a softly lit hourglass sitting on a wooden
-  table, the sand visibly flowing through its narrow neck. Muted cream,
-  charcoal, and olive tones, with a contemplative atmosphere."}'
+  the dance of impermanence, we often forget to inhabit the present moment,
+  losing the very essence of life as we wait for time to pass.","seo_title":"The
+  Silent Theft of Time","meta_description":"Explore the bittersweet nature of
+  time and the importance of living fully in the present
+  moment.","tags":["time","impermanence","presence","self-reflection"],"featured_quote":"Time
+  is a silent thief that steals from us even while we are thanking it for taking
+  away our pain.","slug":"the-silent-theft-of-time","image_prompt":"Editorial,
+  literary-journal photography — a close-up of an hourglass with sand slowly
+  trickling through the narrow neck, muted cream and charcoal tones, soft
+  natural light, contemplative and quiet atmosphere."}'
 pillar: Life
 mood: Contemplative
 secondary_mood: Melancholic
