@@ -1,18 +1,28 @@
 ---
-title: "​1. Matla (The Opening Couplet)"
-date: "2026-05-21"
-slug: "1-matla-the-opening-couplet"
-pillar: "Love"
-mood: "Reflective"
-secondary_mood: "Peaceful"
+title: ​1. Matla (The Opening Couplet)
+date: 2026-05-21
+slug: 1-matla-the-opening-couplet
+ai_assist: '{"category":"Self","mood":"Reflective","secondary_mood":"Contemplative","intensity":7,"excerpt":"In
+  a world where love feels conditional, we must learn to stand firm in our own
+  worth. True affection finds us when we stop chasing
+  it.","seo_title":"Embracing Self-Worth in Love","meta_description":"Explore
+  the journey of self-respect and love, and the importance of not losing oneself
+  in
+  relationships.","tags":["self-worth","love","poetry","self-respect","reflection"],"featured_quote":"If
+  love has to be begged for, it loses all its worth."}'
+pillar: Self
+mood: Reflective
+secondary_mood: Peaceful
 intensity: 4
-excerpt: "A ghazal on self-respect in love: if it has to be begged for, it was never worth having."
-seo_title: "​1. Matla (The Opening Couplet)"
-meta_description: "A ghazal on self-respect in love: if it has to be begged for, it was never worth having."
+excerpt: Explore the journey of self-respect and love, and the importance of not
+  losing oneself in relationships.
 tags:
-  - "poetry"
-  - "self-respect"
-  - "urdu ghazal"
+  - poetry
+  - self-respect
+  - urdu ghazal
+seo_title: ​1. Matla (The Opening Couplet)
+meta_description: "A ghazal on self-respect in love: if it has to be begged for,
+  it was never worth having."
 draft: true
 ---
 
