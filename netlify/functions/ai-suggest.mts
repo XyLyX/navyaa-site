@@ -14,7 +14,11 @@ const IMAGE_STYLE_GUIDE =
   "Muted cream, charcoal, burgundy and olive tones. Soft natural or film-like light. " +
   "Contemplative, quiet, a little melancholic — never staged smiling people. " +
   "Built around one concrete image tied to the essay's theme (an object, a room, a gesture, " +
-  "a landscape, a pair of hands) rather than an abstract mood board. No text, no watermarks, no logos.";
+  "a landscape, a pair of hands) rather than an abstract mood board. No text, no watermarks, no logos. " +
+  "Composition: 16:9 landscape frame, roughly 1920x1080 or larger, main subject centered in the " +
+  "frame with breathing room on both sides — the site crops this same image into a wide homepage " +
+  "banner, a narrower article header and square-ish cards, always from the center outward, so keep " +
+  "important detail away from the far left/right edges.";
 
 // Strip basic HTML down to plain text before sending to the model —
 // keeps the prompt compact and avoids leaking markup into suggestions.
@@ -97,7 +101,8 @@ export default async (req: Request, context: Context) => {
     `"tags":["3-5 lowercase tags"],` +
     `"featured_quote":"the single strongest sentence pulled verbatim from the body, or empty string if too short",` +
     `"slug":"a kebab-case URL slug derived from the title — lowercase, hyphen-separated, no punctuation, 3-7 words, under 60 characters",` +
-    `"image_prompt":"one ready-to-use AI image-generation prompt for this essay's featured image, following the house style described above, 1-3 sentences"}`;
+    `"image_prompt":"one ready-to-use AI image-generation prompt for this essay's featured image, following the house style and composition rules described above. End it with the literal text ` +
+    `'16:9 landscape, centered composition, 1920x1080' so the ratio travels with the prompt wherever it's pasted. 2-4 sentences."}`;
 
   try {
     const resp = await fetch("https://api.openai.com/v1/chat/completions", {
