@@ -1,18 +1,41 @@
 ---
-title: "It's a Slow Death, Isn't It?"
-date: "2026-04-07"
-slug: "its-a-slow-death-isnt-it"
-pillar: "Love"
-mood: "Melancholic"
-secondary_mood: "Restless"
-intensity: 6
-excerpt: "Relationships rarely end in one explosive moment. Why a man's withdrawal is almost never about a single event."
-seo_title: "It's a Slow Death, Isn't It?"
-meta_description: "Relationships rarely end in one explosive moment. Why a man's withdrawal is almost never about a single event."
+title: It's a Slow Death, Isn't It?
+date: 2026-04-07
+slug: its-a-slow-death-isnt-it
+image: /images/uploads/gemini_generated_image_no1ebtno1ebtno1e.jpeg
+ai_assist: "{\"category\":\"Love\",\"mood\":\"Contemplative\",\"secondary_mood\
+  \":\"Melancholic\",\"intensity\":7,\"excerpt\":\"Relationships often fade
+  quietly, eroding over time rather than ending in a dramatic moment. This essay
+  explores the subtle signs of withdrawal.\",\"seo_title\":\"Understanding
+  Emotional Withdrawal in Relationships\",\"meta_description\":\"Explore the
+  gradual emotional withdrawal in relationships and the subtle signs that
+  indicate a love slowly fading
+  away.\",\"tags\":[\"relationships\",\"love\",\"emotional
+  withdrawal\",\"intimacy\"],\"featured_quote\":\"A man's heart doesn't close
+  because of a single mistake. It closes because he realized he'd been standing
+  in the room alone for far too
+  long.\",\"slug\":\"slow-death-in-relationships\",\"image_prompt\":\"Editorial,
+  literary-journal photography of a single, worn-out chair in a dimly lit room,
+  reflecting solitude and the passage of time. The soft light casts gentle
+  shadows, evoking a sense of quiet contemplation about love lost. 16:9
+  landscape, centered composition, 1920x1080\"}"
+pillar: Love
+mood: Contemplative
+secondary_mood: Melancholic
+intensity: 7
+excerpt: Relationships often fade quietly, eroding over time rather than ending
+  in a dramatic moment. This essay explores the subtle signs of withdrawal.
+featured_quote: A man's heart doesn't close because of a single mistake. It
+  closes because he realized he'd been standing in the room alone for far too
+  long.
 tags:
-  - "relationships"
-  - "emotional withdrawal"
-  - "communication"
+  - relationships
+  - love
+  - emotional withdrawal
+  - intimacy
+seo_title: " Understanding Emotional Withdrawal in Relationships"
+meta_description: Explore the gradual emotional withdrawal in relationships and
+  the subtle signs that indicate a love slowly fading away.
 draft: false
 ---
 
