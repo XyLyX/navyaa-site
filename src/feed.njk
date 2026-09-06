@@ -1,0 +1,23 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>Navyaa</title>
+<link>https://navyaa.blog/</link>
+<atom:link href="https://navyaa.blog/feed.xml" rel="self" type="application/rss+xml" />
+<description>The human side of relationships, emotions and becoming yourself.</description>
+<language>en</language>
+{%- for post in collections.posts %}
+<item>
+  <title>{{ post.data.title }}</title>
+  <link>https://navyaa.blog{{ post.url }}</link>
+  <guid>https://navyaa.blog{{ post.url }}</guid>
+  <description><![CDATA[{{ post.data.excerpt }}]]></description>
+  <pubDate>{{ post.date.toUTCString() }}</pubDate>
+</item>
+{%- endfor %}
+</channel>
+</rss>

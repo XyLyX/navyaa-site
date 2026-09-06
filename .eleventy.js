@@ -1,4 +1,4 @@
-const { DateTime } = (() => {
+﻿const { DateTime } = (() => {
   // Tiny built-in date formatter (avoid adding luxon as a dependency)
   return {
     DateTime: {
@@ -46,13 +46,14 @@ function trimWords(content, n) {
   const text = String(content).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
   const words = text.split(" ");
   if (words.length <= n) return text;
-  return words.slice(0, n).join(" ") + "…";
+  return words.slice(0, n).join(" ") + "â€¦";
 }
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/css": "css" });
   eleventyConfig.addPassthroughCopy({ "src/images": "images" });
   eleventyConfig.addPassthroughCopy({ "admin": "admin" });
+  eleventyConfig.addPassthroughCopy({ "src/robots.txt": "robots.txt" });
 
   eleventyConfig.addFilter("slugify", slugify);
   eleventyConfig.addFilter("readingTime", readingTime);
@@ -72,7 +73,7 @@ module.exports = function (eleventyConfig) {
 
   // Nunjucks' built-in `slice` filter CHUNKS an array into N groups
   // (like a "split into pieces" operation) rather than doing a
-  // Python/JS-style range slice — override it here so `arr | slice(1, 4)`
+  // Python/JS-style range slice â€” override it here so `arr | slice(1, 4)`
   // means "elements 1 through 4", matching how every template in this
   // site uses it.
   eleventyConfig.addFilter("slice", (arr, start, end) => (arr || []).slice(start, end));
@@ -83,7 +84,7 @@ module.exports = function (eleventyConfig) {
       .sort((a, b) => b.date - a.date)
   );
 
-  // Same as "posts" but with any featured:true post moved to the front —
+  // Same as "posts" but with any featured:true post moved to the front â€”
   // mirrors WordPress's native "Sticky Post" homepage-feature behavior.
   eleventyConfig.addCollection("postsFeaturedFirst", (api) => {
     const posts = api.getFilteredByGlob("src/posts/*.md")

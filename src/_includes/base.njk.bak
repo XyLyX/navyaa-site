@@ -9,34 +9,11 @@
 <meta property="og:title" content="{{ seo_title or title or 'Navyaa' }}">
 <meta property="og:description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life, Soul and the Unfiltered truth in between.' }}">
 <meta property="og:type" content="{% if pillar %}article{% else %}website{% endif %}">
-<meta property="og:image" content="https://navyaa.blog{{ image or '/images/default-og-image.jpg' }}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ seo_title or title or 'Navyaa' }}">
-<meta name="twitter:description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life, Soul and the Unfiltered truth in between.' }}">
-<meta name="twitter:image" content="https://navyaa.blog{{ image or '/images/default-og-image.jpg' }}">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Navyaa",
-  "url": "https://navyaa.blog",
-  "description": "Honest perspectives on relationships, emotional patterns, healing, self-discovery and the complicated business of being human.",
-  "logo": "https://navyaa.blog/images/logo.png"
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Navyaa",
-  "url": "https://navyaa.blog"
-}
-</script>
+{% if image %}<meta property="og:image" content="{{ image }}">{% endif %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/navyaa.css">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="data:,">
 </head>
 <body>
 <div class="nvy-wrap">

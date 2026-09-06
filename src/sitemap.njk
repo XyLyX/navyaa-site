@@ -1,0 +1,19 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://navyaa.blog/</loc></url>
+  <url><loc>https://navyaa.blog/about/</loc></url>
+  <url><loc>https://navyaa.blog/start-here/</loc></url>
+{%- for pillar in pillars %}
+  <url><loc>https://navyaa.blog/{{ pillar | lower }}/</loc></url>
+{%- endfor %}
+{%- for post in collections.posts %}
+  <url>
+    <loc>https://navyaa.blog{{ post.url }}</loc>
+    <lastmod>{{ post.date.toISOString() }}</lastmod>
+  </url>
+{%- endfor %}
+</urlset>

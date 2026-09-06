@@ -52,8 +52,7 @@ function trimWords(content, n) {
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/css": "css" });
   eleventyConfig.addPassthroughCopy({ "src/images": "images" });
-  eleventyConfig.addPassthroughCopy({ "admin": "admin" }); eleventyConfig.addPassthroughCopy({ "src/robots.txt": "robots.txt" });
-	
+  eleventyConfig.addPassthroughCopy({ "admin": "admin" });
 
   eleventyConfig.addFilter("slugify", slugify);
   eleventyConfig.addFilter("readingTime", readingTime);
