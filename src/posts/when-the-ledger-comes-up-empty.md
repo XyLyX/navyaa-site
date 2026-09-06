@@ -1,6 +1,6 @@
 ---
 title: When the Ledger Comes Up Empty
-date: 2026-09-06
+date: 2026-09-06T15:00:00
 slug: confronting-empty-hands
 image: /images/uploads/gemini_generated_image_15mjw615mjw615mj.jpeg
 ai_assist: '{"category":"Soul","mood":"Melancholic","secondary_mood":"Contemplative","intensity":8,"excerpt":"In
