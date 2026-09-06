@@ -27,8 +27,8 @@ layout: base.njk
   "headline": "{{ seo_title or title }}",
   "description": "{{ meta_description or excerpt }}",
   "image": "https://navyaa.blog{{ image }}",
-  "datePublished": "{{ date.toISOString() }}",
-  "dateModified": "{{ date.toISOString() }}",
+  "datePublished": "{{ date.toISOString() if date else '' }}",
+  "dateModified": "{{ date.toISOString() if date else '' }}",
   "articleSection": "{{ pillar }}",
   "author": { "@type": "Person", "name": "Navyaa", "url": "https://navyaa.blog/author/navyaa/" },
   "publisher": {

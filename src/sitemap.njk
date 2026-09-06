@@ -13,7 +13,7 @@ eleventyExcludeFromCollections: true
 {%- for post in collections.posts %}
   <url>
     <loc>https://navyaa.blog{{ post.url }}</loc>
-    <lastmod>{{ post.date.toISOString() }}</lastmod>
+    {% if post.date %}<lastmod>{{ post.date.toISOString() }}</lastmod>{% endif %}
   </url>
 {%- endfor %}
 </urlset>
