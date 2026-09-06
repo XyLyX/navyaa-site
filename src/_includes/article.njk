@@ -1,4 +1,4 @@
----
+﻿---
 layout: base.njk
 ---
 {% set moods = [mood] %}
@@ -27,8 +27,13 @@ layout: base.njk
   "headline": "{{ seo_title or title }}",
   "description": "{{ meta_description or excerpt }}",
   "image": "https://navyaa.blog{{ image }}",
-  "datePublished": "{{ date.toISOString() if date else '' }}",
-  "dateModified": "{{ date.toISOString() if date else '' }}",
+  {% if date %}
+  "datePublished": "{{ date.toISOString() }}",
+  "dateModified": "{{ date.toISOString() }}",
+{% else %}
+  "datePublished": "",
+  "dateModified": "",
+{% endif %}
   "articleSection": "{{ pillar }}",
   "author": { "@type": "Person", "name": "Navyaa", "url": "https://navyaa.blog/author/navyaa/" },
   "publisher": {
