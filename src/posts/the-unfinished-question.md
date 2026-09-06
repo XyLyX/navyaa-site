@@ -1,11 +1,34 @@
 ---
 title: The Unfinished Question
 date: 2026-09-06
-slug: "123"
-pillar: Self
+slug: the-unfinished-question
+image: /images/uploads/gemini_generated_image_ipj8faipj8faipj8.jpeg
+ai_assist: '{"category":"Soul","mood":"Reflective","secondary_mood":"Contemplative","intensity":8,"excerpt":"In
+  the quiet friction between expectation and feeling, I find myself choosing
+  presence over perfection.","seo_title":"Choosing Presence Over
+  Perfection","meta_description":"Exploring the tension between societal
+  expectations and authentic
+  living.","tags":["presence","authenticity","vulnerability","self-discovery"],"featured_quote":"I
+  want to be a
+  participant.","slug":"the-unfinished-question","image_prompt":"Editorial,
+  literary-journal photography of a softly lit room with a single open window
+  letting in warm evening light, a pair of hands resting on a wooden table,
+  reflecting contemplation and presence. Muted cream and olive tones, quiet and
+  a little melancholic. 16:9 landscape, centered composition, 1920x1080"}'
+pillar: Soul
 mood: Reflective
-intensity: 5
-excerpt: "123"
+secondary_mood: Contemplative
+intensity: 8
+excerpt: In the quiet friction between expectation and feeling, I find myself
+  choosing presence over perfection.
+featured_quote: I want to be a participant.
+tags:
+  - presence
+  - authenticity
+  - vulnerability
+  - self-discovery
+seo_title: Choosing Presence Over Perfection
+meta_description: Exploring the tension between societal expectations and authentic living.
 featured: false
 draft: false
 ---
