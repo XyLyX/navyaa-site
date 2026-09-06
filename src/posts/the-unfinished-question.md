@@ -1,6 +1,6 @@
 ---
 title: The Unfinished Question
-date: 2026-09-06
+date: 2026-09-06T18:00:00
 slug: the-unfinished-question
 image: /images/uploads/gemini_generated_image_ipj8faipj8faipj8.jpeg
 ai_assist: '{"category":"Soul","mood":"Reflective","secondary_mood":"Contemplative","intensity":8,"excerpt":"In
