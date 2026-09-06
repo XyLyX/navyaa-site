@@ -38,7 +38,7 @@ collections:
         pattern: "Unfiltered"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Publish date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: true }
       - { label: "URL slug", name: "slug", widget: "string", hint: "Used in the web address, e.g. /this-is-the-slug/" }
       - { label: "Featured image", name: "image", widget: "image", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
