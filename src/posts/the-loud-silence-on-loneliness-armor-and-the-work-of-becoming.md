@@ -1,6 +1,6 @@
 ---
 title: " The Loud Silence: On Loneliness, Armor, and the Work of Becoming"
-date: 2026-09-06
+date: 2026-09-06T09:00:00
 slug: embracing-solitude-strength-loneliness
 image: /images/uploads/gemini_generated_image_mdhg2nmdhg2nmdhg.jpeg
 ai_assist: '{"category":"Self","mood":"Reflective","secondary_mood":"Contemplative","intensity":8,"excerpt":"In
