@@ -1,18 +1,20 @@
 ---
-title: "​1. Matla (The Opening Couplet)"
-date: "2026-05-21"
-slug: "1-matla-the-opening-couplet"
-pillar: "Love"
-mood: "Reflective"
-secondary_mood: "Peaceful"
+title: Matla (The Opening Couplet)
+date: 2026-05-21
+slug: 1-matla-the-opening-couplet
+pillar: Love
+mood: Reflective
+secondary_mood: Peaceful
 intensity: 4
-excerpt: "A ghazal on self-respect in love: if it has to be begged for, it was never worth having."
-seo_title: "​1. Matla (The Opening Couplet)"
-meta_description: "A ghazal on self-respect in love: if it has to be begged for, it was never worth having."
+excerpt: "A ghazal on self-respect in love: if it has to be begged for, it was
+  never worth having."
 tags:
-  - "poetry"
-  - "self-respect"
-  - "urdu ghazal"
+  - poetry
+  - self-respect
+  - urdu ghazal
+seo_title: ​1. Matla (The Opening Couplet)
+meta_description: "A ghazal on self-respect in love: if it has to be begged for,
+  it was never worth having."
 draft: true
 ---
 
