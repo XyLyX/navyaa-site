@@ -1,11 +1,38 @@
 ---
 title: When the Ledger Comes Up Empty
 date: 2026-09-06
-slug: "123"
-pillar: Life
-mood: Reflective
-intensity: 5
-excerpt: "123"
+slug: confronting-empty-hands
+image: /images/uploads/gemini_generated_image_15mjw615mjw615mj.jpeg
+ai_assist: '{"category":"Soul","mood":"Melancholic","secondary_mood":"Contemplative","intensity":8,"excerpt":"In
+  a world that promises balance, what do we do when our hands come up empty?
+  This essay confronts the void and the truths we often
+  avoid.","seo_title":"Confronting Empty Hands and Unfulfilled
+  Promises","meta_description":"Exploring the deep disillusionment of life’s
+  unfulfilled promises and the freedom found in embracing painful
+  truths.","tags":["disillusionment","truth","existential","freedom","reflection"],"featured_quote":"You
+  took my blood, my youth, my passion, my hope. And what did you give
+  back?","slug":"confronting-empty-hands","image_prompt":"Editorial,
+  literary-journal photography of two open hands, palms up, resting on a
+  weathered wooden table. Soft natural light casts gentle shadows, evoking a
+  sense of emptiness and reflection. The background is muted with hints of olive
+  and burgundy tones, creating a contemplative atmosphere. 16:9 landscape,
+  centered composition, 1920x1080"}'
+pillar: Soul
+mood: Melancholic
+secondary_mood: Contemplative
+intensity: 8
+excerpt: In a world that promises balance, what do we do when our hands come up
+  empty? This essay confronts the void and the truths we often avoid.
+featured_quote: You took my blood, my youth, my passion, my hope. And what did you give back?
+tags:
+  - disillusionment
+  - truth
+  - existential
+  - freedom
+  - reflection
+seo_title: Confronting Empty Hands and Unfulfilled Promises
+meta_description: Exploring the deep disillusionment of life’s unfulfilled
+  promises and the freedom found in embracing painful truths.
 featured: false
 draft: false
 ---
