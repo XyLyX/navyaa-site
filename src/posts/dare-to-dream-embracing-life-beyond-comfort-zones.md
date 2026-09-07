@@ -1,6 +1,6 @@
 ---
 title: "Dare to Dream: Embracing Life Beyond Comfort Zones"
-date: "2026-02-15"
+date: 2026-02-15
 slug: "dare-to-dream-embracing-life-beyond-comfort-zones"
 pillar: "Life"
 mood: "Restless"

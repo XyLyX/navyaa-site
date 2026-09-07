@@ -28,8 +28,13 @@ layout: base.njk
   "description": "{{ meta_description or excerpt }}",
   "image": "https://navyaa.blog{{ image }}",
   {% if date %}
+  {% if date and date.toISOString %}
   "datePublished": "{{ date.toISOString() }}",
   "dateModified": "{{ date.toISOString() }}",
+  {% else %}
+  "datePublished": "",
+  "dateModified": "",
+  {% endif %}
 {% else %}
   "datePublished": "",
   "dateModified": "",
