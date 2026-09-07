@@ -224,14 +224,14 @@
                 h("span", { style: sectionHeading }, "Suggested FAQ"),
                 h("div", null,
                   r.faq.map(function (item, i) {
-                    return h("div", { key: i, style: { marginTop: "4px" } }, [
-                      h("strong", null, item.question),
-                      h("div", null, item.answer),
+                    return h("div", { key: i, style: { marginTop: "8px", paddingLeft: "8px", borderLeft: "2px solid #D8D1C8" } }, [
+                      h("div", null, [h("strong", null, item.question), copyButton("faq_q_" + i, item.question)]),
+                      h("div", { style: { marginTop: "2px" } }, [item.answer, copyButton("faq_a_" + i, item.answer)]),
                     ]);
                   })
                 ),
                 h("div", { style: { fontSize: "11px", color: "#77736D", marginTop: "6px" } },
-                  "Add these as entries in the FAQ field below (Question + Answer per item)."
+                  "Click \"+ Add\" in the FAQ field below, then Copy each Question and Answer here into it, one pair per entry."
                 ),
               ])
             );
@@ -243,11 +243,18 @@
                 h("span", { style: sectionHeading }, "Suggested internal links (verified URLs)"),
                 h("div", null,
                   r.link_placements.map(function (lp, i) {
+                    var markdownLink = "[" + lp.title + "](" + lp.url + ")";
                     return h("div", { key: i, style: { marginTop: "6px", paddingLeft: "8px", borderLeft: "2px solid #D8D1C8" } }, [
-                      h("div", null, [h("strong", null, lp.title), " → ", h("code", { style: { fontSize: "11px" } }, lp.url)]),
+                      h("div", null, [
+                        h("strong", null, lp.title),
+                        " → ",
+                        h("code", { style: { fontSize: "11px" } }, lp.url),
+                        copyButton("link_" + i, markdownLink),
+                      ]),
                       lp.suggested_sentence
                         ? h("div", { style: { fontStyle: "italic", marginTop: "2px" } }, "\"" + lp.suggested_sentence + "\"")
                         : null,
+                      h("div", { style: { fontSize: "10px", color: "#9A968E", marginTop: "2px" } }, "Copy pastes: " + markdownLink),
                     ]);
                   })
                 ),
