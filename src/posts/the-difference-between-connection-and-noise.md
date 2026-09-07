@@ -1,5 +1,5 @@
 ---
-title: The Difference Between Connection and Noise
+title: The Weight of Turning Fifty-Two
 date: 2026-09-08T01:50
 slug: the-weight-of-turning-fifty-two
 image: /images/uploads/gemini_generated_image_6lx0au6lx0au6lx0.jpeg
