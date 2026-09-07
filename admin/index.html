@@ -185,18 +185,17 @@
             ]),
           ];
 
-          // Cluster suggestion -- select fields can't be pasted into, so
-          // this just tells the writer what to pick in the Cluster /
-          // Cluster role dropdowns below rather than offering a Copy button.
-          if (r.cluster && r.cluster !== "None") {
-            resultChildren.push(
-              h("div", { key: "cluster", style: { marginTop: "8px" } }, [
-                h("strong", null, "Suggested cluster: "),
-                r.cluster + (r.cluster_role ? " (" + r.cluster_role + ")" : ""),
-                h("div", { style: { fontSize: "11px", color: "#77736D" } }, "Select this in the Cluster / Cluster role fields below."),
-              ])
-            );
-          }
+          // Cluster suggestion -- always rendered (including "None"), with
+          // a highlighted background so it's impossible to scroll past
+          // without noticing. Select widgets can't be pasted into, so this
+          // is a manual-click instruction, not an auto-fill.
+          resultChildren.push(
+            h("div", { key: "cluster", style: { marginTop: "8px", padding: "6px 10px", background: "#F0EAE3", borderLeft: "3px solid #6E3035" } }, [
+              h("strong", null, "Cluster: "),
+              r.cluster === "None" ? "None — this essay doesn't fit an existing cluster" : (r.cluster + (r.cluster_role ? " (" + r.cluster_role + ")" : "")),
+              h("div", { style: { fontSize: "11px", color: "#77736D", marginTop: "2px" } }, "Select this in the Cluster / Cluster role fields below."),
+            ])
+          );
 
           if (r.key_takeaway) {
             resultChildren.push(
@@ -230,6 +229,9 @@
                       h("div", null, item.answer),
                     ]);
                   })
+                ),
+                h("div", { style: { fontSize: "11px", color: "#77736D", marginTop: "6px" } },
+                  "Add these as entries in the FAQ field below (Question + Answer per item)."
                 ),
               ])
             );

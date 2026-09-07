@@ -1,4 +1,4 @@
-﻿---
+---
 layout: base.njk
 ---
 {% set moods = [mood] %}
@@ -95,6 +95,34 @@ layout: base.njk
 <div class="nvy-more">
 	<blockquote class="nvy-serif" style="font-size:24px; font-style:italic; line-height:1.5; border-left:3px solid #6E3035; padding-left:24px; margin:0;">&ldquo;{{ featured_quote }}&rdquo;</blockquote>
 </div>
+{% endif %}
+
+{% if faq and faq.length %}
+<div class="nvy-more">
+	<div class="divider"></div>
+	<div class="nvy-eyebrow" style="margin-bottom:20px;">Frequently Asked Questions</div>
+	{% for item in faq %}
+	<div style="margin-bottom:20px;">
+		<div class="nvy-serif" style="font-size:17px; font-weight:600; margin-bottom:6px;">{{ item.question }}</div>
+		<div class="nvy-sans" style="font-size:15px; line-height:1.7; color:#3A3733;">{{ item.answer }}</div>
+	</div>
+	{% endfor %}
+</div>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for item in faq %}
+    {
+      "@type": "Question",
+      "name": {{ item.question | dump | safe }},
+      "acceptedAnswer": { "@type": "Answer", "text": {{ item.answer | dump | safe }} }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
 {% endif %}
 
 <div class="nvy-more" id="comments">
