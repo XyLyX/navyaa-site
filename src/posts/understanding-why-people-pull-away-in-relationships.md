@@ -1,7 +1,7 @@
 ---
 title: "Understanding Why People Pull Away in Relationships"
 date: "2025-12-21"
-slug: "understanding-why-people-pull-away-in-relationships"
+slug: "why-people-pull-away-in-relationships-7-reasons-and-what-to-do"
 pillar: "Love"
 mood: "Reflective"
 secondary_mood: "Restless"
