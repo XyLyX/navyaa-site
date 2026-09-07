@@ -23,7 +23,7 @@ draft: false
 
 <p>And almost instinctively, your mind turns inward and asks,<br><strong>“What did I do wrong?”</strong></p>
 
-<p>As a therapist, and also as someone who has sat in that uncertainty personally, I want to tell you this gently and clearly:</p>
+<p>I've sat in that uncertainty myself, and I want to tell you this gently and clearly:</p>
 
 <p><strong>When someone pulls away, it’s rarely about a single thing you did.</strong><br>More often, it’s about something happening <em>inside them</em>.</p>
 
@@ -135,7 +135,7 @@ draft: false
 
 <h4><strong>A Personal Note</strong></h4>
 
-<p>I’ve learned—both professionally and personally—that the most painful part of someone pulling away isn’t the distance itself.</p>
+<p>I've learned, through my own experience, that the most painful part of someone pulling away isn't the distance itself.</p>
 
 <p>It’s the silence.</p>
 
@@ -160,7 +160,5 @@ draft: false
 <p><strong>And if someone consistently creates distance, the question becomes less about <em>why they pulled away</em> and more about <em>what you need to feel emotionally safe</em>.</strong></p>
 
 <p><strong>That clarity is always worth choosing.</strong></p>
-
-<p>#WhenSomeonePullsAway #RelationshipClarity #EmotionalDistance #AttachmentStyles #FearOfIntimacy #EmotionalUnavailability #RelationshipHealing #HealthyBoundaries #SelfWorth #RelationshipAdvice #TherapistInsights #EmotionalAwareness #ModernRelationships #HealingJourney #MindfulLove</p>
 
 <p></p>
