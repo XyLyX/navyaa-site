@@ -67,7 +67,10 @@
 
     var NavyaaAIControl = window.createClass({
       getInitialState: function () {
-        return { loading: false, error: "", result: null, copied: "" };
+        return { loading: false, error: "", result: null, copied: "", linkInput: "" };
+      },
+      handleLinkInputChange: function (e) {
+        this.setState({ linkInput: e.target.value });
       },
       analyze: function () {
         var self = this;
@@ -83,12 +86,21 @@
           return;
         }
 
+        // Writer-typed titles of existing posts to link to. Split on
+        // newlines/commas; the function resolves each against the site's
+        // real posts index, so a typo just comes back unresolved rather
+        // than ever producing a wrong URL.
+        var linkedTitles = (self.state.linkInput || "")
+          .split(/[\n,]/)
+          .map(function (s) { return s.trim(); })
+          .filter(Boolean);
+
         self.setState({ loading: true, error: "", result: null, copied: "" });
 
         fetch("/api/ai-suggest", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ title: title, content: body }),
+          body: JSON.stringify({ title: title, content: body, linked_titles: linkedTitles }),
         })
           .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
           .then(function (res) {
@@ -127,7 +139,23 @@
           }, state.copied === field ? "Copied" : "Copy");
         }
 
+        var linkInputStyle = {
+          width: "100%", padding: "9px 11px", border: "1px solid #D8D1C8", borderRadius: "3px",
+          fontSize: "13px", fontFamily: "inherit", marginBottom: "8px", minHeight: "54px",
+          boxSizing: "border-box", resize: "vertical",
+        };
+
         var children = [
+          h("label", { key: "linklabel", style: { display: "block", fontSize: "12px", color: "#77736D", marginBottom: "4px" } },
+            "Link to these existing posts (paste exact titles, one per line — optional)"
+          ),
+          h("textarea", {
+            key: "linkinput",
+            style: linkInputStyle,
+            value: state.linkInput,
+            placeholder: "Why People Pull Away in Relationships\nHow to Let Go of Someone You Still Love",
+            onChange: this.handleLinkInputChange,
+          }),
           h("button", { type: "button", style: btn, onClick: this.analyze, disabled: state.loading },
             state.loading ? "Analyzing…" : "Analyze with AI"
           ),
@@ -138,27 +166,116 @@
         }
 
         if (r) {
-          children.push(
-            h("div", { style: box }, [
-              h("div", { key: "cat" }, [h("strong", null, "Pillar: "), r.category || "—"]),
-              h("div", { key: "mood" }, [h("strong", null, "Mood: "), r.mood || "—", r.secondary_mood ? " / " + r.secondary_mood : ""]),
-              h("div", { key: "int" }, [h("strong", null, "Intensity: "), r.intensity != null ? r.intensity : "—"]),
-              h("div", { key: "slug" }, [h("strong", null, "URL slug: "), r.slug || "—", copyButton("slug", r.slug)]),
-              h("div", { key: "exc" }, [h("strong", null, "Excerpt: "), r.excerpt || "—"]),
-              h("div", { key: "seo" }, [h("strong", null, "SEO title: "), r.seo_title || "—"]),
-              h("div", { key: "meta" }, [h("strong", null, "Meta description: "), r.meta_description || "—"]),
-              h("div", { key: "tags" }, [h("strong", null, "Tags: "), (r.tags || []).join(", ") || "—"]),
-              h("div", { key: "quote" }, [h("strong", null, "Featured quote: "), r.featured_quote || "—"]),
-              h("div", { key: "img", style: { marginTop: "8px" } }, [
-                h("strong", null, "Image prompt: "),
-                copyButton("image_prompt", r.image_prompt),
-                h("div", { style: { marginTop: "4px", color: "#3A3733" } }, r.image_prompt || "—"),
-              ]),
-              h("div", { key: "note", style: { marginTop: "10px", color: "#77736D", fontStyle: "italic" } },
-                "Copy whichever of these you agree with into the fields below. Nothing here is applied automatically."
-              ),
-            ])
+          var sectionHeading = { fontWeight: 600, marginTop: "14px", marginBottom: "4px", display: "block" };
+
+          var resultChildren = [
+            h("div", { key: "cat" }, [h("strong", null, "Pillar: "), r.category || "—"]),
+            h("div", { key: "mood" }, [h("strong", null, "Mood: "), r.mood || "—", r.secondary_mood ? " / " + r.secondary_mood : ""]),
+            h("div", { key: "int" }, [h("strong", null, "Intensity: "), r.intensity != null ? r.intensity : "—"]),
+            h("div", { key: "slug" }, [h("strong", null, "URL slug: "), r.slug || "—", copyButton("slug", r.slug)]),
+            h("div", { key: "exc" }, [h("strong", null, "Excerpt: "), r.excerpt || "—"]),
+            h("div", { key: "seo" }, [h("strong", null, "SEO title: "), r.seo_title || "—"]),
+            h("div", { key: "meta" }, [h("strong", null, "Meta description: "), r.meta_description || "—"]),
+            h("div", { key: "tags" }, [h("strong", null, "Tags: "), (r.tags || []).join(", ") || "—"]),
+            h("div", { key: "quote" }, [h("strong", null, "Featured quote: "), r.featured_quote || "—"]),
+            h("div", { key: "img", style: { marginTop: "8px" } }, [
+              h("strong", null, "Image prompt: "),
+              copyButton("image_prompt", r.image_prompt),
+              h("div", { style: { marginTop: "4px", color: "#3A3733" } }, r.image_prompt || "—"),
+            ]),
+          ];
+
+          // Cluster suggestion -- select fields can't be pasted into, so
+          // this just tells the writer what to pick in the Cluster /
+          // Cluster role dropdowns below rather than offering a Copy button.
+          if (r.cluster && r.cluster !== "None") {
+            resultChildren.push(
+              h("div", { key: "cluster", style: { marginTop: "8px" } }, [
+                h("strong", null, "Suggested cluster: "),
+                r.cluster + (r.cluster_role ? " (" + r.cluster_role + ")" : ""),
+                h("div", { style: { fontSize: "11px", color: "#77736D" } }, "Select this in the Cluster / Cluster role fields below."),
+              ])
+            );
+          }
+
+          if (r.key_takeaway) {
+            resultChildren.push(
+              h("div", { key: "takeaway", style: { marginTop: "10px" } }, [
+                h("span", { style: sectionHeading }, "Key takeaway"),
+                copyButton("key_takeaway", r.key_takeaway),
+                h("div", { style: { marginTop: "4px" } }, r.key_takeaway),
+              ])
+            );
+          }
+
+          if (r.h2_outline && r.h2_outline.length) {
+            resultChildren.push(
+              h("div", { key: "outline", style: { marginTop: "10px" } }, [
+                h("span", { style: sectionHeading }, "Suggested section headings"),
+                h("ol", { style: { margin: "4px 0 0", paddingLeft: "20px" } },
+                  r.h2_outline.map(function (h2, i) { return h("li", { key: i }, h2); })
+                ),
+              ])
+            );
+          }
+
+          if (r.faq && r.faq.length) {
+            resultChildren.push(
+              h("div", { key: "faq", style: { marginTop: "10px" } }, [
+                h("span", { style: sectionHeading }, "Suggested FAQ"),
+                h("div", null,
+                  r.faq.map(function (item, i) {
+                    return h("div", { key: i, style: { marginTop: "4px" } }, [
+                      h("strong", null, item.question),
+                      h("div", null, item.answer),
+                    ]);
+                  })
+                ),
+              ])
+            );
+          }
+
+          if (r.link_placements && r.link_placements.length) {
+            resultChildren.push(
+              h("div", { key: "links", style: { marginTop: "10px" } }, [
+                h("span", { style: sectionHeading }, "Suggested internal links (verified URLs)"),
+                h("div", null,
+                  r.link_placements.map(function (lp, i) {
+                    return h("div", { key: i, style: { marginTop: "6px", paddingLeft: "8px", borderLeft: "2px solid #D8D1C8" } }, [
+                      h("div", null, [h("strong", null, lp.title), " → ", h("code", { style: { fontSize: "11px" } }, lp.url)]),
+                      lp.suggested_sentence
+                        ? h("div", { style: { fontStyle: "italic", marginTop: "2px" } }, "\"" + lp.suggested_sentence + "\"")
+                        : null,
+                    ]);
+                  })
+                ),
+              ])
+            );
+          }
+
+          if (r.unresolved_link_titles && r.unresolved_link_titles.length) {
+            resultChildren.push(
+              h("div", { key: "unresolved", style: { marginTop: "10px", color: "#6E3035" } }, [
+                h("strong", null, "Couldn't verify: "),
+                r.unresolved_link_titles.join(", "),
+                h("div", { style: { fontSize: "11px" } }, r.unresolved_link_note || "Check the exact title spelling."),
+              ])
+            );
+          }
+
+          if (r.link_index_error) {
+            resultChildren.push(
+              h("div", { key: "idxerr", style: { marginTop: "8px", fontSize: "11px", color: "#77736D" } }, r.link_index_error)
+            );
+          }
+
+          resultChildren.push(
+            h("div", { key: "note", style: { marginTop: "10px", color: "#77736D", fontStyle: "italic" } },
+              "Copy whichever of these you agree with into the fields below. Nothing here is applied automatically."
+            )
           );
+
+          children.push(h("div", { style: box }, resultChildren));
         }
 
         return h("div", null, children);

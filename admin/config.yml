@@ -51,6 +51,19 @@ collections:
         name: "pillar"
         widget: "select"
         options: ["Love", "Self", "Life", "Soul", "Unfiltered"]
+      - label: "Cluster"
+        name: "cluster"
+        widget: "select"
+        options: ["None", "Pulling Away", "Breakups & Healing", "Overthinking", "Self-worth"]
+        default: "None"
+        required: false
+        hint: "Which content cluster this essay belongs to, if any. See the Navyaa Intelligence suggestion above."
+      - label: "Cluster role"
+        name: "cluster_role"
+        widget: "select"
+        options: ["", "pillar", "supporting", "related"]
+        required: false
+        hint: "Leave blank if Cluster is None."
       - label: "Mood"
         name: "mood"
         widget: "select"

@@ -1,0 +1,9 @@
+---
+permalink: /posts-index.json
+eleventyExcludeFromCollections: true
+---
+[
+{%- for post in collections.posts %}
+  {"title": {{ post.data.title | dump }}, "url": "{{ post.url }}", "pillar": {{ post.data.pillar | dump }}}{% if not loop.last %},{% endif %}
+{%- endfor %}
+]
