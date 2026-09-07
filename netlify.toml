@@ -303,3 +303,13 @@
   from = "/dare-to-dream-embracing-life-beyond-comfort-zones/"
   to = "/how-to-stop-living-inside-your-comfort-zone/"
   status = 301
+
+[[redirects]]
+  from = "/finding-freedom-in-letting-go/"
+  to = "/how-to-let-go-of-someone-you-still-love/"
+  status = 301
+
+[[redirects]]
+  from = "/why-we-stay-in-relationships-long/"
+  to = "/why-we-stay-in-relationships-that-no-longer-work/"
+  status = 301
