@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Finding Stillness in a Chaotic World"
 date: "2026-05-04"
 slug: "how-to-find-peace-when-life-feels-overwhelming"

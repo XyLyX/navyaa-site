@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Understanding Emotional Exhaustion: A Reflection on Life and Death"
 date: "2026-05-03"
 slug: "what-emotional-exhaustion-really-feels-like"

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Heal Your Relationships: Identify and Transform Patterns"
 date: "2025-12-09"
 slug: "how-to-recognize-and-change-unhealthy-relationship-patterns"

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "When Love Feels Heavy: Understanding Emotional Burnout"
 date: "2025-12-07"
 slug: "when-love-feels-exhausting-understanding-relationship-burnout"

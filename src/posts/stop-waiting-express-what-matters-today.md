@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Stop Waiting: Express What Matters Today"
 date: "2026-02-19"
 slug: "stop-waiting-say-what-matters-before-its-too-late"

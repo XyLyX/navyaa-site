@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Stop Chasing Closure: Hereâ€™s What You Actually Need"
 date: "2025-12-06"
 slug: "why-you-dont-need-closure-from-the-person-who-hurt-you"

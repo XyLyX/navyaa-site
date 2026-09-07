@@ -1,4 +1,4 @@
-﻿---
+---
 title: "The Night Court"
 date: "2026-03-16"
 slug: "why-we-overthink-at-night-when-your-mind-wont-let-you-sleep"

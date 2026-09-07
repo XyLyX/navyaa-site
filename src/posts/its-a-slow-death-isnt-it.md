@@ -1,4 +1,4 @@
-﻿---
+---
 title: It's a Slow Death, Isn't It?
 date: 2026-04-07
 slug: "why-relationships-slowly-die-the-quiet-signs-someone-is-checking-out"

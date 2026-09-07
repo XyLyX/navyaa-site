@@ -1,4 +1,4 @@
-﻿---
+---
 title: "The Power of Silence in Emotional Healing"
 date: "2026-05-04"
 slug: "why-silence-hurts-so-much-when-youre-healing"

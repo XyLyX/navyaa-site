@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Dare to Dream: Embracing Life Beyond Comfort Zones"
 date: 2026-02-15
 slug: "how-to-stop-living-inside-your-comfort-zone"

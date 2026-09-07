@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Why We Stay In Relationships Long After Theyâ€™ve Stopped Working"
 date: "2025-12-04"
 slug: "why-we-stay-in-relationships-that-no-longer-work"
