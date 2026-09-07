@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-J9QM35CTPG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-J9QM35CTPG');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ seo_title or title or "Navyaa" }}{% if title and not seo_title %} — Navyaa{% endif %}</title>
@@ -9,11 +17,17 @@
 <meta property="og:title" content="{{ seo_title or title or 'Navyaa' }}">
 <meta property="og:description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life, Soul and the Unfiltered truth in between.' }}">
 <meta property="og:type" content="{% if pillar %}article{% else %}website{% endif %}">
-<meta property="og:image" content="https://navyaa.blog{{ image or '/images/default-og-image.jpg' }}">
+{% set ogImageRaw = image or '/images/default-og-image.jpg' %}
+{% if '://' in ogImageRaw %}
+{% set ogImageUrl = ogImageRaw %}
+{% else %}
+{% set ogImageUrl = 'https://navyaa.blog' + ogImageRaw %}
+{% endif %}
+<meta property="og:image" content="{{ ogImageUrl }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ seo_title or title or 'Navyaa' }}">
 <meta name="twitter:description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life, Soul and the Unfiltered truth in between.' }}">
-<meta name="twitter:image" content="https://navyaa.blog{{ image or '/images/default-og-image.jpg' }}">
+<meta name="twitter:image" content="{{ ogImageUrl }}">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -21,7 +35,8 @@
   "name": "Navyaa",
   "url": "https://navyaa.blog",
   "description": "Honest perspectives on relationships, emotional patterns, healing, self-discovery and the complicated business of being human.",
-  "logo": "https://navyaa.blog/images/logo.png"
+  "logo": "https://navyaa.blog/images/logo.png",
+  "sameAs": ["https://www.instagram.com/navyaablog/", "https://www.pinterest.com/NavyaaBlog/", "https://www.threads.com/@navyaablog", "https://x.com/NavyaaBlog", "https://www.linkedin.com/company/navyaa/"]
 }
 </script>
 <script type="application/ld+json">
@@ -64,9 +79,11 @@
       </nav>
       <div class="nvy-footer-social-col">
         <div class="nvy-footer-social">
-          <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151515" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
-          <a href="#" aria-label="X"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151515" stroke-width="1.6"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg></a>
-          <a href="#" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151515" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="10" x2="8" y2="16"/><circle cx="8" cy="7" r="0.6"/><path d="M12 16v-4c0-1.5 1-2 2-2s2 0.5 2 2v4"/></svg></a>
+          <a href="https://www.instagram.com/navyaablog/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151515" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="https://www.pinterest.com/NavyaaBlog/" target="_blank" rel="noopener" aria-label="Pinterest"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151515" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 17c1-2 2-6 2-8a2 2 0 1 1 4 0c0 1-1 4-1 4"/><path d="M12 9c2 0 4 1.5 4 4s-2 4-4 4"/></svg></a>
+          <a href="https://www.threads.com/@navyaablog" target="_blank" rel="noopener" aria-label="Threads"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151515" stroke-width="1.6"><path d="M12 3c-5 0-8 3-8 7.5 0 3 1.5 5 4 6.2-1-2.5-1-5.7 1-7.2 1.5 3 3.5 4.5 5.5 3.5 1.5-.8 1.5-3 0-4-1-.5-2.5-.5-3.5.5"/><path d="M15 9c2 1 3 3 3 5.5 0 4-3 6.5-7 6.5"/></svg></a>
+          <a href="https://x.com/NavyaaBlog" target="_blank" rel="noopener" aria-label="X"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151515" stroke-width="1.6"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg></a>
+          <a href="https://www.linkedin.com/company/navyaa/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151515" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="10" x2="8" y2="16"/><circle cx="8" cy="7" r="0.6"/><path d="M12 16v-4c0-1.5 1-2 2-2s2 0.5 2 2v4"/></svg></a>
         </div>
         <a href="mailto:hello@navyaa.blog" class="nvy-footer-contact">Contact Navyaa</a>
       </div>
