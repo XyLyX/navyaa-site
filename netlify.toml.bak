@@ -1,4 +1,4 @@
-﻿[build]
+[build]
   command = "npm run build"
   publish = "_site"
   functions = "netlify/functions"
@@ -247,9 +247,4 @@
 [[redirects]]
   from = "/2026/05/04/the-power-of-silence-in-emotional-healing/"
   to = "/the-power-of-silence-in-emotional-healing/"
-  status = 301
-
-[[redirects]]
-  from = "/understanding-why-people-pull-away-in-relationships/"
-  to = "/why-people-pull-away-in-relationships-7-reasons-and-what-to-do/"
   status = 301
