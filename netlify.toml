@@ -253,3 +253,53 @@
   from = "/understanding-why-people-pull-away-in-relationships/"
   to = "/why-people-pull-away-in-relationships-7-reasons-and-what-to-do/"
   status = 301
+
+[[redirects]]
+  from = "/its-a-slow-death-isnt-it/"
+  to = "/why-relationships-slowly-die-the-quiet-signs-someone-is-checking-out/"
+  status = 301
+
+[[redirects]]
+  from = "/heal-your-relationships-identify-and-transform-patterns/"
+  to = "/how-to-recognize-and-change-unhealthy-relationship-patterns/"
+  status = 301
+
+[[redirects]]
+  from = "/when-love-feels-heavy-understanding-emotional-burnout/"
+  to = "/when-love-feels-exhausting-understanding-relationship-burnout/"
+  status = 301
+
+[[redirects]]
+  from = "/stop-chasing-closure-heres-what-you-actually-need/"
+  to = "/why-you-dont-need-closure-from-the-person-who-hurt-you/"
+  status = 301
+
+[[redirects]]
+  from = "/the-night-court/"
+  to = "/why-we-overthink-at-night-when-your-mind-wont-let-you-sleep/"
+  status = 301
+
+[[redirects]]
+  from = "/finding-stillness-in-a-chaotic-world/"
+  to = "/how-to-find-peace-when-life-feels-overwhelming/"
+  status = 301
+
+[[redirects]]
+  from = "/the-power-of-silence-in-emotional-healing/"
+  to = "/why-silence-hurts-so-much-when-youre-healing/"
+  status = 301
+
+[[redirects]]
+  from = "/understanding-emotional-exhaustion-a-reflection-on-life-and-death/"
+  to = "/what-emotional-exhaustion-really-feels-like/"
+  status = 301
+
+[[redirects]]
+  from = "/stop-waiting-express-what-matters-today/"
+  to = "/stop-waiting-say-what-matters-before-its-too-late/"
+  status = 301
+
+[[redirects]]
+  from = "/dare-to-dream-embracing-life-beyond-comfort-zones/"
+  to = "/how-to-stop-living-inside-your-comfort-zone/"
+  status = 301
