@@ -1,6 +1,6 @@
 ---
 title: The Heart That Refuses to Forget
-date: 2026-09-08T23:41
+date: 2026-09-09T00:01
 slug: the-heart-that-refuses-to-forget
 image: /images/uploads/gemini_generated_image_ei6wyfei6wyfei6w.jpeg
 ai_assist: "{\"category\":\"Love\",\"mood\":\"Contemplative\",\"secondary_mood\
