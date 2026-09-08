@@ -25,32 +25,43 @@ const CLUSTERS = [
 
 // Navyaa's featured-image house style — kept here so every AI-suggested
 // image prompt stays on-brand instead of drifting toward generic stock-photo
-// or wellness-blog imagery. Two failure modes have shown up in testing and
-// both are explicitly countered below: (1) recycling the same handful of
-// props (empty chair, bare table, hands on a desk) regardless of essay
-// content, and (2) a subtler version of the same problem — swapping the
-// foreground object but keeping an identical scene around it every time
-// (the same rustic cottage window, curtains, wooden table and scattered
-// dried leaves, just with a different item on the table). Fix #1 alone
-// did not solve #2, so the setting itself is now required to vary too.
+// or wellness-blog imagery. Four failure modes have shown up in testing:
+// (1) recycling the same props regardless of content, (2) an identical
+// scene/setting around a swapped-out prop, (3) the generator defaulting to
+// an "object beside a window" composition regardless of what the text
+// asks for, and (4) the most significant one -- this guide used to hardcode
+// "contemplative, quiet, a little melancholic" as the mood for EVERY image,
+// which actively misrepresented essays that are witty, playful, or comedic
+// in tone (confirmed on a real essay: a funny, self-deprecating piece about
+// post-surgery food cravings got rendered as somber and melancholic). The
+// mood taxonomy this function already assigns (Playful, Hopeful, Restless,
+// Melancholic, etc.) must now drive the image's emotional register too,
+// not be overridden by one fixed tone.
 const IMAGE_STYLE_GUIDE =
   "Editorial, literary-journal photography — never stock-photo or wellness-blog looking. " +
-  "Muted cream, charcoal, burgundy and olive tones. Soft natural or film-like light. " +
-  "Contemplative, quiet, a little melancholic — never staged smiling people. No text, no watermarks, no logos. " +
-  "CRITICAL — READ THE ESSAY, DON'T DEFAULT TO A STOCK SCENE: both the SUBJECT and the SETTING must come " +
-  "directly from THIS essay's specific content. Do not default to 'a quiet room with a window, curtains, an " +
-  "antique wooden table and scattered dried leaves' as a fallback scene — that is exactly the trap to avoid. " +
-  "First identify: where does this essay's story actually happen (a kitchen, a car at a red light, a hospital " +
-  "corridor, a childhood bedroom, a subway platform, a garden in summer heat, a parking lot at night, a " +
-  "cluttered office desk, an airport gate)? What season, time of day, weather, and era does the text imply? " +
-  "Only after answering that, choose the one concrete object or gesture within THAT specific setting that the " +
-  "essay actually describes. The setting is not a neutral backdrop to be reused — it is part of what makes " +
-  "each image distinct. If two different essays would produce a similar-looking room, you have defaulted to a " +
-  "stock scene instead of building one from the text; go back and use a more specific and different setting. " +
-  "Composition: 16:9 landscape frame, roughly 1920x1080 or larger, main subject centered in the " +
-  "frame with breathing room on both sides — the site crops this same image into a wide homepage " +
-  "banner, a narrower article header and square-ish cards, always from the center outward, so keep " +
-  "important detail away from the far left/right edges.";
+  "Muted cream, charcoal, burgundy and olive tones. Soft natural or film-like light. Never staged smiling " +
+  "people, never a cheesy stock-photo grin — but the EMOTIONAL REGISTER of the image must match the mood " +
+  "and secondary_mood you assigned this essay elsewhere in your response, not a fixed default. A witty, " +
+  "self-deprecating or Playful essay should produce an image with warmth, wry humor, or lightness in it — " +
+  "NOT a somber, melancholic treatment. Reserve genuinely quiet/melancholic imagery for essays whose mood " +
+  "actually is Melancholic, Nostalgic or similarly heavy — do not apply that tone universally. No text, no " +
+  "watermarks, no logos. " +
+  "CRITICAL — SUBJECT AND SETTING FROM THE ESSAY, NOT A STOCK SCENE: identify where this essay's story " +
+  "actually happens (a kitchen, a car, a hospital corridor, a childhood bedroom, a garden, a parking lot) and " +
+  "the season/time/era it implies, then pick the one concrete object or gesture the essay actually describes " +
+  "within that setting. " +
+  "CRITICAL — BANNED COMPOSITION: do NOT render this as 'an object resting on a table or counter, framed " +
+  "beside a window with the outside world visible through the glass.' That specific composition has been " +
+  "overused regardless of subject matter and must not be repeated. Instead, explicitly choose ONE of these " +
+  "different camera framings, picking whichever best fits this essay, and state your choice in the prompt: " +
+  "an extreme close-up filling most of the frame with only a soft blurred background and no window in view; " +
+  "a top-down flat-lay looking straight down at a surface; a partial view through a doorway or half-open " +
+  "door; a shot with the subject deliberately off-center to one third of the frame against a plain wall or " +
+  "dark background; or an outdoor setting with no interior window framing at all. Vary this choice between " +
+  "essays — do not let every image default to the same framing either. " +
+  "Composition: 16:9 landscape frame, roughly 1920x1080 or larger — within whichever framing you chose above, " +
+  "leave breathing room on both left and right edges, since the site crops this same image into a wide " +
+  "homepage banner, a narrower article header and square-ish cards, always from the center outward.";
 
 // Strip basic HTML down to plain text before sending to the model —
 // keeps the prompt compact and avoids leaking markup into suggestions.
