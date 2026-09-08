@@ -65,12 +65,15 @@
       return "";
     }
 
-    // Scroll a field into view and flash a highlight around it, so after
-    // clicking Copy the writer's eye is drawn straight to where to paste
-    // instead of having to hunt for it further down the form. Reuses the
-    // same label-matching approach as getFieldValueByLabel, generalized to
-    // any input/select/textarea (or, for list widgets like FAQ with no
-    // single fixed field, the section label itself as the best anchor).
+    // Scroll a field into view and flash a highlight around it. Deliberately
+    // draws the highlight as a SEPARATE floating overlay positioned over the
+    // target, rather than mutating the target field's own style/outline --
+    // Decap's form fields are React-managed DOM nodes, and directly setting
+    // inline styles on them (then reverting via setTimeout) risks colliding
+    // with React's own reconciliation if that field re-renders in between,
+    // which can surface as a "removeChild: not a child of this node" error.
+    // An overlay we create and remove ourselves never touches React's nodes,
+    // so it can't conflict with them.
     function scrollToFieldByLabel(labelText) {
       var labels = Array.prototype.slice.call(document.querySelectorAll("label"));
       var label = labels.filter(function (l) {
@@ -94,17 +97,31 @@
 
       target.scrollIntoView({ behavior: "smooth", block: "center" });
 
-      var prevOutline = target.style.outline;
-      var prevShadow = target.style.boxShadow;
-      var prevTransition = target.style.transition;
-      target.style.transition = "outline 0.15s ease, box-shadow 0.15s ease";
-      target.style.outline = "3px solid #6E3035";
-      target.style.boxShadow = "0 0 0 4px rgba(110, 48, 53, 0.15)";
+      // Give the smooth scroll a moment to land, then measure and draw the
+      // overlay -- a plain, self-owned div, appended to and removed from
+      // document.body only by this function, never touching `target` itself.
       setTimeout(function () {
-        target.style.outline = prevOutline;
-        target.style.boxShadow = prevShadow;
-        target.style.transition = prevTransition;
-      }, 1800);
+        var rect = target.getBoundingClientRect();
+        var overlay = document.createElement("div");
+        overlay.style.position = "fixed";
+        overlay.style.left = (rect.left - 3) + "px";
+        overlay.style.top = (rect.top - 3) + "px";
+        overlay.style.width = (rect.width + 6) + "px";
+        overlay.style.height = (rect.height + 6) + "px";
+        overlay.style.border = "3px solid #6E3035";
+        overlay.style.boxShadow = "0 0 0 4px rgba(110, 48, 53, 0.15)";
+        overlay.style.borderRadius = "4px";
+        overlay.style.pointerEvents = "none";
+        overlay.style.zIndex = "9999";
+        overlay.style.transition = "opacity 0.4s ease";
+        document.body.appendChild(overlay);
+        setTimeout(function () {
+          overlay.style.opacity = "0";
+          setTimeout(function () {
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+          }, 400);
+        }, 1400);
+      }, 350);
     }
 
     var NavyaaAIControl = window.createClass({
