@@ -61,7 +61,7 @@ faq:
       on what you have rather than what you lack.
 draft: false
 ---
-In a world that constantly demands more—more success, more possessions, more proof that we are doing life correctly—we tend to forget the simplest human response to existence: the smile. A piece of Urdu poetry I keep coming back to, *Muskurayo* ("Smile"), challenges the reflex we've all been trained into, the one where hardship is met with analysis, complaint, and comparison. It suggests something quieter and stranger: that a smile isn't only the result of happiness. It can be the tool itself—a way through, not just a reaction to having arrived.
+In a world that constantly demands more—more success, more possessions, more proof that we are doing life correctly—we tend to forget the simplest human response to existence: the smile. A piece of poetry I keep coming back to, *Muskurayo* ("Smile"), challenges the reflex we've all been trained into, the one where hardship is met with analysis, complaint, and comparison. It suggests something quieter and stranger: that a smile isn't only the result of happiness. It can be the tool itself—a way through, not just a reaction to having arrived.
 
 > **Muskurayo, muskurayo agar aaj kahin se haar gaye ho, us jeet ki zarurat tumse zyada kisi ko thi shayad.**
 >
