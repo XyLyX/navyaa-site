@@ -25,24 +25,28 @@ const CLUSTERS = [
 
 // Navyaa's featured-image house style — kept here so every AI-suggested
 // image prompt stays on-brand instead of drifting toward generic stock-photo
-// or wellness-blog imagery. Explicitly forces specificity drawn from the
-// essay itself, because left unconstrained the model reliably defaults to
-// the same handful of tropes (empty chair, bare table, hands on a desk)
-// regardless of what the essay actually says.
+// or wellness-blog imagery. Two failure modes have shown up in testing and
+// both are explicitly countered below: (1) recycling the same handful of
+// props (empty chair, bare table, hands on a desk) regardless of essay
+// content, and (2) a subtler version of the same problem — swapping the
+// foreground object but keeping an identical scene around it every time
+// (the same rustic cottage window, curtains, wooden table and scattered
+// dried leaves, just with a different item on the table). Fix #1 alone
+// did not solve #2, so the setting itself is now required to vary too.
 const IMAGE_STYLE_GUIDE =
   "Editorial, literary-journal photography — never stock-photo or wellness-blog looking. " +
   "Muted cream, charcoal, burgundy and olive tones. Soft natural or film-like light. " +
-  "Contemplative, quiet, a little melancholic — never staged smiling people. " +
-  "CRITICAL: the central image must be a SPECIFIC, CONCRETE detail drawn directly from THIS essay's " +
-  "actual content — an object, place, gesture or moment the essay itself mentions or clearly evokes " +
-  "(a specific piece of clothing, a particular room or landscape named in the text, an action described " +
-  "in a scene, a season or weather condition mentioned, a specific everyday object tied to the essay's " +
-  "story). Read the body text and pull the single most visually distinctive concrete detail from it — do " +
-  "not default to a generic empty chair, bare table, hands resting on a desk, or empty room unless the " +
-  "essay's own content specifically centers on that exact object. Two essays should never get " +
-  "interchangeable images — if you could swap this image onto a different Navyaa essay without anyone " +
-  "noticing, it is too generic and you must choose a more specific detail from the text. " +
-  "No text, no watermarks, no logos. " +
+  "Contemplative, quiet, a little melancholic — never staged smiling people. No text, no watermarks, no logos. " +
+  "CRITICAL — READ THE ESSAY, DON'T DEFAULT TO A STOCK SCENE: both the SUBJECT and the SETTING must come " +
+  "directly from THIS essay's specific content. Do not default to 'a quiet room with a window, curtains, an " +
+  "antique wooden table and scattered dried leaves' as a fallback scene — that is exactly the trap to avoid. " +
+  "First identify: where does this essay's story actually happen (a kitchen, a car at a red light, a hospital " +
+  "corridor, a childhood bedroom, a subway platform, a garden in summer heat, a parking lot at night, a " +
+  "cluttered office desk, an airport gate)? What season, time of day, weather, and era does the text imply? " +
+  "Only after answering that, choose the one concrete object or gesture within THAT specific setting that the " +
+  "essay actually describes. The setting is not a neutral backdrop to be reused — it is part of what makes " +
+  "each image distinct. If two different essays would produce a similar-looking room, you have defaulted to a " +
+  "stock scene instead of building one from the text; go back and use a more specific and different setting. " +
   "Composition: 16:9 landscape frame, roughly 1920x1080 or larger, main subject centered in the " +
   "frame with breathing room on both sides — the site crops this same image into a wide homepage " +
   "banner, a narrower article header and square-ish cards, always from the center outward, so keep " +
