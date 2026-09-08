@@ -25,13 +25,24 @@ const CLUSTERS = [
 
 // Navyaa's featured-image house style — kept here so every AI-suggested
 // image prompt stays on-brand instead of drifting toward generic stock-photo
-// or wellness-blog imagery.
+// or wellness-blog imagery. Explicitly forces specificity drawn from the
+// essay itself, because left unconstrained the model reliably defaults to
+// the same handful of tropes (empty chair, bare table, hands on a desk)
+// regardless of what the essay actually says.
 const IMAGE_STYLE_GUIDE =
   "Editorial, literary-journal photography — never stock-photo or wellness-blog looking. " +
   "Muted cream, charcoal, burgundy and olive tones. Soft natural or film-like light. " +
   "Contemplative, quiet, a little melancholic — never staged smiling people. " +
-  "Built around one concrete image tied to the essay's theme (an object, a room, a gesture, " +
-  "a landscape, a pair of hands) rather than an abstract mood board. No text, no watermarks, no logos. " +
+  "CRITICAL: the central image must be a SPECIFIC, CONCRETE detail drawn directly from THIS essay's " +
+  "actual content — an object, place, gesture or moment the essay itself mentions or clearly evokes " +
+  "(a specific piece of clothing, a particular room or landscape named in the text, an action described " +
+  "in a scene, a season or weather condition mentioned, a specific everyday object tied to the essay's " +
+  "story). Read the body text and pull the single most visually distinctive concrete detail from it — do " +
+  "not default to a generic empty chair, bare table, hands resting on a desk, or empty room unless the " +
+  "essay's own content specifically centers on that exact object. Two essays should never get " +
+  "interchangeable images — if you could swap this image onto a different Navyaa essay without anyone " +
+  "noticing, it is too generic and you must choose a more specific detail from the text. " +
+  "No text, no watermarks, no logos. " +
   "Composition: 16:9 landscape frame, roughly 1920x1080 or larger, main subject centered in the " +
   "frame with breathing room on both sides — the site crops this same image into a wide homepage " +
   "banner, a narrower article header and square-ish cards, always from the center outward, so keep " +

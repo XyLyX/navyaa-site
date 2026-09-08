@@ -65,6 +65,48 @@
       return "";
     }
 
+    // Scroll a field into view and flash a highlight around it, so after
+    // clicking Copy the writer's eye is drawn straight to where to paste
+    // instead of having to hunt for it further down the form. Reuses the
+    // same label-matching approach as getFieldValueByLabel, generalized to
+    // any input/select/textarea (or, for list widgets like FAQ with no
+    // single fixed field, the section label itself as the best anchor).
+    function scrollToFieldByLabel(labelText) {
+      var labels = Array.prototype.slice.call(document.querySelectorAll("label"));
+      var label = labels.filter(function (l) {
+        return l.textContent.trim().toLowerCase().indexOf(labelText.toLowerCase()) === 0;
+      })[0];
+      if (!label) return;
+
+      var target = label;
+      var forId = label.getAttribute("for");
+      var el = forId ? document.getElementById(forId) : null;
+      if (el) {
+        target = el;
+      } else {
+        var node = label.closest("div");
+        for (var i = 0; i < 5 && node; i++) {
+          var editable = node.querySelector('[data-slate-editor="true"], textarea, select, input');
+          if (editable) { target = editable; break; }
+          node = node.parentElement;
+        }
+      }
+
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      var prevOutline = target.style.outline;
+      var prevShadow = target.style.boxShadow;
+      var prevTransition = target.style.transition;
+      target.style.transition = "outline 0.15s ease, box-shadow 0.15s ease";
+      target.style.outline = "3px solid #6E3035";
+      target.style.boxShadow = "0 0 0 4px rgba(110, 48, 53, 0.15)";
+      setTimeout(function () {
+        target.style.outline = prevOutline;
+        target.style.boxShadow = prevShadow;
+        target.style.transition = prevTransition;
+      }, 1800);
+    }
+
     var NavyaaAIControl = window.createClass({
       getInitialState: function () {
         return { loading: false, error: "", result: null, copied: "", linkInput: "" };
@@ -115,10 +157,11 @@
             self.setState({ loading: false, error: "Request failed: " + err.message });
           });
       },
-      copy: function (field, text) {
+      copy: function (field, text, targetLabel) {
         copyToClipboard(text);
         var self = this;
         self.setState({ copied: field });
+        if (targetLabel) scrollToFieldByLabel(targetLabel);
         setTimeout(function () { self.setState({ copied: "" }); }, 1500);
       },
       render: function () {
@@ -130,13 +173,21 @@
         var btn = { background: "#6E3035", color: "#F7F4EE", border: "none", borderRadius: "3px", padding: "10px 18px", fontSize: "13px", cursor: "pointer" };
         var copyBtn = { background: "none", color: "#6E3035", border: "1px solid #6E3035", borderRadius: "3px", padding: "2px 8px", fontSize: "11px", cursor: "pointer", marginLeft: "8px" };
 
-        function copyButton(field, text) {
+        function copyButton(field, text, targetLabel) {
           if (!text) return null;
           return h("button", {
             type: "button",
             style: copyBtn,
-            onClick: function () { self.copy(field, text); },
+            onClick: function () { self.copy(field, text, targetLabel); },
           }, state.copied === field ? "Copied" : "Copy");
+        }
+
+        function showButton(targetLabel) {
+          return h("button", {
+            type: "button",
+            style: copyBtn,
+            onClick: function () { scrollToFieldByLabel(targetLabel); },
+          }, "Show field");
         }
 
         var linkInputStyle = {
@@ -169,15 +220,15 @@
           var sectionHeading = { fontWeight: 600, marginTop: "14px", marginBottom: "4px", display: "block" };
 
           var resultChildren = [
-            h("div", { key: "cat" }, [h("strong", null, "Pillar: "), r.category || "—"]),
-            h("div", { key: "mood" }, [h("strong", null, "Mood: "), r.mood || "—", r.secondary_mood ? " / " + r.secondary_mood : ""]),
-            h("div", { key: "int" }, [h("strong", null, "Intensity: "), r.intensity != null ? r.intensity : "—"]),
-            h("div", { key: "slug" }, [h("strong", null, "URL slug: "), r.slug || "—", copyButton("slug", r.slug)]),
-            h("div", { key: "exc" }, [h("strong", null, "Excerpt: "), r.excerpt || "—"]),
-            h("div", { key: "seo" }, [h("strong", null, "SEO title: "), r.seo_title || "—"]),
-            h("div", { key: "meta" }, [h("strong", null, "Meta description: "), r.meta_description || "—"]),
-            h("div", { key: "tags" }, [h("strong", null, "Tags: "), (r.tags || []).join(", ") || "—"]),
-            h("div", { key: "quote" }, [h("strong", null, "Featured quote: "), r.featured_quote || "—"]),
+            h("div", { key: "cat" }, [h("strong", null, "Pillar: "), r.category || "—", r.category ? showButton("Pillar") : null]),
+            h("div", { key: "mood" }, [h("strong", null, "Mood: "), r.mood || "—", r.secondary_mood ? " / " + r.secondary_mood : "", r.mood ? showButton("Mood") : null]),
+            h("div", { key: "int" }, [h("strong", null, "Intensity: "), r.intensity != null ? r.intensity : "—", showButton("Emotional intensity")]),
+            h("div", { key: "slug" }, [h("strong", null, "URL slug: "), r.slug || "—", copyButton("slug", r.slug, "URL slug")]),
+            h("div", { key: "exc" }, [h("strong", null, "Excerpt: "), r.excerpt || "—", copyButton("excerpt", r.excerpt, "Excerpt")]),
+            h("div", { key: "seo" }, [h("strong", null, "SEO title: "), r.seo_title || "—", copyButton("seo", r.seo_title, "SEO title")]),
+            h("div", { key: "meta" }, [h("strong", null, "Meta description: "), r.meta_description || "—", copyButton("meta", r.meta_description, "Meta description")]),
+            h("div", { key: "tags" }, [h("strong", null, "Tags: "), (r.tags || []).join(", ") || "—", (r.tags || []).length ? copyButton("tags", r.tags.join(", "), "Tags") : null]),
+            h("div", { key: "quote" }, [h("strong", null, "Featured quote: "), r.featured_quote || "—", r.featured_quote ? copyButton("quote", r.featured_quote, "Featured quote") : null]),
             h("div", { key: "img", style: { marginTop: "8px" } }, [
               h("strong", null, "Image prompt: "),
               copyButton("image_prompt", r.image_prompt),
@@ -188,11 +239,13 @@
           // Cluster suggestion -- always rendered (including "None"), with
           // a highlighted background so it's impossible to scroll past
           // without noticing. Select widgets can't be pasted into, so this
-          // is a manual-click instruction, not an auto-fill.
+          // is a manual-click instruction (with a Show field jump) rather
+          // than an auto-fill.
           resultChildren.push(
             h("div", { key: "cluster", style: { marginTop: "8px", padding: "6px 10px", background: "#F0EAE3", borderLeft: "3px solid #6E3035" } }, [
               h("strong", null, "Cluster: "),
               r.cluster === "None" ? "None — this essay doesn't fit an existing cluster" : (r.cluster + (r.cluster_role ? " (" + r.cluster_role + ")" : "")),
+              r.cluster !== "None" ? showButton("Cluster") : null,
               h("div", { style: { fontSize: "11px", color: "#77736D", marginTop: "2px" } }, "Select this in the Cluster / Cluster role fields below."),
             ])
           );
@@ -201,7 +254,7 @@
             resultChildren.push(
               h("div", { key: "takeaway", style: { marginTop: "10px" } }, [
                 h("span", { style: sectionHeading }, "Key takeaway"),
-                copyButton("key_takeaway", r.key_takeaway),
+                copyButton("key_takeaway", r.key_takeaway, "Key takeaway"),
                 h("div", { style: { marginTop: "4px" } }, r.key_takeaway),
               ])
             );
@@ -225,8 +278,8 @@
                 h("div", null,
                   r.faq.map(function (item, i) {
                     return h("div", { key: i, style: { marginTop: "8px", paddingLeft: "8px", borderLeft: "2px solid #D8D1C8" } }, [
-                      h("div", null, [h("strong", null, item.question), copyButton("faq_q_" + i, item.question)]),
-                      h("div", { style: { marginTop: "2px" } }, [item.answer, copyButton("faq_a_" + i, item.answer)]),
+                      h("div", null, [h("strong", null, item.question), copyButton("faq_q_" + i, item.question, "FAQ")]),
+                      h("div", { style: { marginTop: "2px" } }, [item.answer, copyButton("faq_a_" + i, item.answer, "FAQ")]),
                     ]);
                   })
                 ),
@@ -249,7 +302,7 @@
                         h("strong", null, lp.title),
                         " → ",
                         h("code", { style: { fontSize: "11px" } }, lp.url),
-                        copyButton("link_" + i, markdownLink),
+                        copyButton("link_" + i, markdownLink, "Body"),
                       ]),
                       lp.suggested_sentence
                         ? h("div", { style: { fontStyle: "italic", marginTop: "2px" } }, "\"" + lp.suggested_sentence + "\"")

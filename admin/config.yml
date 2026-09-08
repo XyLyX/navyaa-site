@@ -79,6 +79,14 @@ collections:
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "SEO title", name: "seo_title", widget: "string", required: false }
       - { label: "Meta description", name: "meta_description", widget: "text", required: false }
+      - { label: "Key takeaway (short direct answer, shown in a callout box)", name: "key_takeaway", widget: "text", required: false }
+      - label: "FAQ (only if the topic genuinely has question-shaped search intent)"
+        name: "faq"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Question", name: "question", widget: "string" }
+          - { label: "Answer", name: "answer", widget: "text" }
       - { label: "Feature on homepage", name: "featured", widget: "boolean", default: false, required: false }
       - { label: "Draft (hide from the live site)", name: "draft", widget: "boolean", default: false }
 
