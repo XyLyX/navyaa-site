@@ -63,7 +63,7 @@ title: "{{ pillar }}"
 <section class="nvy-section">
 	<div class="nvy-eyebrow">Older Essays</div>
 	<div class="nvy-older-grid">
-		{% for p in posts | slice(5, 9) %}
+		{% for p in posts | slice(5) %}
 		<a href="{{ p.url }}" style="display:flex; flex-direction:column; gap:10px;">
 			<div class="thumb">{% if p.data.image %}<img src="{{ p.data.image }}" alt="{{ p.data.title }}">{% endif %}</div>
 			<h4 class="nvy-serif">{{ p.data.title }}</h4>
