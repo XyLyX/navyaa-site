@@ -74,12 +74,15 @@ function normalizeForMatch(str: string): string {
   return String(str || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
 
-type IndexedPost = { title: string; url: string; pillar?: string };
+type IndexedPost = { title: string; seo_title?: string; url: string; pillar?: string };
 
-// Resolve a writer-typed title against the live posts index. Exact
-// (case/punctuation-insensitive) match only -- no fuzzy guessing, so a
-// resolved link is always a real, confirmed URL. Anything that doesn't
-// match exactly comes back unresolved rather than a best-guess slug.
+// Resolve a writer-typed title against the live posts index. Checks BOTH
+// the original literary title and the SEO title -- a post's on-page H1
+// stays the original poetic title even after an SEO rewrite changes
+// seo_title/slug (see the v2 audit's "metadata only" scope decision), so
+// a writer typing whichever version they happen to remember should still
+// resolve correctly. Exact (case/punctuation-insensitive) match only --
+// no fuzzy guessing, so a resolved link is always a real, confirmed URL.
 function resolveLinkedTitles(
   typedTitles: string[],
   index: IndexedPost[]
@@ -89,7 +92,9 @@ function resolveLinkedTitles(
 
   for (const typed of typedTitles) {
     const target = normalizeForMatch(typed);
-    const match = index.find((p) => normalizeForMatch(p.title) === target);
+    const match = index.find(
+      (p) => normalizeForMatch(p.title) === target || normalizeForMatch(p.seo_title || "") === target
+    );
     if (match) {
       verified.push({ title: match.title, url: match.url });
     } else {
