@@ -126,10 +126,52 @@
 
     var NavyaaAIControl = window.createClass({
       getInitialState: function () {
-        return { loading: false, error: "", result: null, copied: "", linkInput: "" };
+        return {
+          loading: false, error: "", result: null, copied: "", linkInput: "",
+          existingPosts: [], postsLoading: true, postsError: "", postFilter: "",
+        };
+      },
+      componentDidMount: function () {
+        var self = this;
+        // Pull the site's real, build-generated post index (title/url per
+        // published post — see src/posts-index.njk) so the writer can pick
+        // real titles instead of typing them from memory into a blank box.
+        fetch("/posts-index.json")
+          .then(function (r) { if (!r.ok) throw new Error("status " + r.status); return r.json(); })
+          .then(function (list) {
+            self.setState({
+              existingPosts: Array.isArray(list) ? list : [],
+              postsLoading: false,
+            });
+          })
+          .catch(function () {
+            self.setState({
+              postsLoading: false,
+              postsError: "Couldn't load your posts list. You can still type titles manually below.",
+            });
+          });
       },
       handleLinkInputChange: function (e) {
         this.setState({ linkInput: e.target.value });
+      },
+      handlePostFilterChange: function (e) {
+        this.setState({ postFilter: e.target.value });
+      },
+      // Toggle one real post title in/out of linkInput (the same
+      // newline-separated value the manual textarea edits) so clicking a
+      // post and typing a title both feed the same underlying list.
+      togglePost: function (title) {
+        var current = (this.state.linkInput || "")
+          .split(/\n/)
+          .map(function (s) { return s.trim(); })
+          .filter(Boolean);
+        var idx = current.indexOf(title);
+        if (idx === -1) {
+          current.push(title);
+        } else {
+          current.splice(idx, 1);
+        }
+        this.setState({ linkInput: current.join("\n") });
       },
       analyze: function () {
         var self = this;
@@ -209,19 +251,83 @@
 
         var linkInputStyle = {
           width: "100%", padding: "9px 11px", border: "1px solid #D8D1C8", borderRadius: "3px",
-          fontSize: "13px", fontFamily: "inherit", marginBottom: "8px", minHeight: "54px",
+          fontSize: "13px", fontFamily: "inherit", marginBottom: "8px", minHeight: "40px",
           boxSizing: "border-box", resize: "vertical",
         };
+        var filterInputStyle = {
+          width: "100%", padding: "7px 10px", border: "1px solid #D8D1C8", borderRadius: "3px",
+          fontSize: "12px", fontFamily: "inherit", marginBottom: "6px", boxSizing: "border-box",
+        };
+        var pickerBoxStyle = {
+          maxHeight: "160px", overflowY: "auto", border: "1px solid #D8D1C8", borderRadius: "3px",
+          marginBottom: "8px", background: "#fff",
+        };
+        var postRowStyle = {
+          display: "flex", alignItems: "center", gap: "8px", padding: "6px 10px",
+          fontSize: "12px", cursor: "pointer", borderBottom: "1px solid #EFEBE4",
+        };
+
+        var selectedTitles = (state.linkInput || "")
+          .split(/\n/)
+          .map(function (s) { return s.trim(); })
+          .filter(Boolean);
+        var filterLower = (state.postFilter || "").trim().toLowerCase();
+        var filteredPosts = state.existingPosts.filter(function (p) {
+          return !filterLower || (p.title || "").toLowerCase().indexOf(filterLower) !== -1;
+        });
+
+        var pickerChildren = [];
+        if (state.postsLoading) {
+          pickerChildren.push(h("div", { key: "loading", style: { padding: "10px", fontSize: "12px", color: "#77736D" } }, "Loading your posts…"));
+        } else if (state.postsError) {
+          pickerChildren.push(h("div", { key: "err", style: { padding: "10px", fontSize: "12px", color: "#6E3035" } }, state.postsError));
+        } else if (!state.existingPosts.length) {
+          pickerChildren.push(h("div", { key: "empty", style: { padding: "10px", fontSize: "12px", color: "#77736D" } }, "No published posts found yet."));
+        } else if (!filteredPosts.length) {
+          pickerChildren.push(h("div", { key: "noresults", style: { padding: "10px", fontSize: "12px", color: "#77736D" } }, "No posts match \"" + state.postFilter + "\"."));
+        } else {
+          filteredPosts.forEach(function (p, i) {
+            var checked = selectedTitles.indexOf(p.title) !== -1;
+            pickerChildren.push(
+              h("div", {
+                key: "post" + i,
+                style: Object.assign({}, postRowStyle, checked ? { background: "#F0EAE3" } : {}),
+                onClick: function () { self.togglePost(p.title); },
+              }, [
+                h("input", { type: "checkbox", checked: checked, readOnly: true, key: "cb" }),
+                h("span", { key: "t", style: { flex: 1 } }, p.title),
+                p.pillar ? h("span", { key: "p", style: { fontSize: "10px", color: "#9A968E" } }, p.pillar) : null,
+              ])
+            );
+          });
+        }
 
         var children = [
           h("label", { key: "linklabel", style: { display: "block", fontSize: "12px", color: "#77736D", marginBottom: "4px" } },
-            "Link to these existing posts (paste exact titles, one per line — optional)"
+            "Link to these existing posts (optional)"
+          ),
+          h("input", {
+            key: "postfilter",
+            type: "text",
+            style: filterInputStyle,
+            value: state.postFilter,
+            placeholder: "Search your published posts…",
+            onChange: this.handlePostFilterChange,
+          }),
+          h("div", { key: "postpicker", style: pickerBoxStyle }, pickerChildren),
+          selectedTitles.length
+            ? h("div", { key: "selectedcount", style: { fontSize: "11px", color: "#77736D", marginBottom: "6px" } },
+                selectedTitles.length + " post" + (selectedTitles.length === 1 ? "" : "s") + " selected"
+              )
+            : null,
+          h("label", { key: "manuallabel", style: { display: "block", fontSize: "11px", color: "#9A968E", marginBottom: "4px" } },
+            "Or type/edit titles manually (one per line — must match a real post title exactly)"
           ),
           h("textarea", {
             key: "linkinput",
             style: linkInputStyle,
             value: state.linkInput,
-            placeholder: "Why People Pull Away in Relationships\nHow to Let Go of Someone You Still Love",
+            placeholder: "Paste or type an exact post title…",
             onChange: this.handleLinkInputChange,
           }),
           h("button", { type: "button", style: btn, onClick: this.analyze, disabled: state.loading },
