@@ -60,11 +60,17 @@ Carrying two versions of yourself has a cost, and the cost compounds whether or 
 
 A poem I came across recently put it more precisely than I've managed to, in years of trying:
 
-> There's a version of methat shows up every day,does what's expected,smiles, laughs and jokesand then there's the version of methat sits in the dark afterward,hollowed out,wondering how long i can keepsplitting myself in two.
+> There's a version of me that shows up every day,
+>
+> does what's expected, smiles, laughs and jokes
+>
+> and then there's the version of me that sits in the dark afterward,
+>
+> hollowed out, wondering how long i can keep splitting myself in two.
 
-I didn't write those words, but I could have. They echo in the late-night scrolls, the quiet car rides home, the small moments when the mask slips just enough to feel the cold air underneath it.
+I didn't write those words, but I could have. They echo in the late-night scrolls, the quiet car rides home, and the small moments when the mask slips just enough to feel the cold air underneath it.
 
-The splitting isn't dramatic or cinematic. It's mundane. It's sustainable, right up until it isn't. Understanding why it happens matters more than judging that it does — the answers, on the surface, are usually obvious enough: work, family, the low hum of social expectation, the fear of being too much or somehow still not enough. But underneath those obvious answers is a quieter, more urgent one: the split isn't a personal failing, it's a learned strategy, built early and reinforced constantly, for staying safe in a world that rewards the performance far more visibly than it rewards the presence underneath it.
+The splitting isn't dramatic or cinematic. It's mundane. It's sustainable, right up until it isn't. Understanding why it happens matters more than judging that it does — the answers, on the surface, are usually obvious enough: work, family, the low hum of social expectation, and the fear of being too much or somehow still not enough. But underneath those obvious answers is a quieter, more urgent one: the split isn't a personal failing, it's a learned strategy, built early and reinforced constantly, for staying safe in a world that rewards the performance far more visibly than it rewards the presence underneath it.
 
 The trouble is that the divide doesn't stay still once it's built. Every day it grows a little wider. The daytime version gets better at performing — more polished, more automatic, more convincing even to itself. The nighttime version gets quieter, more tired, more resigned to the idea that this is simply how life works now. Left unexamined, the split doesn't plateau. It deepens.
 
