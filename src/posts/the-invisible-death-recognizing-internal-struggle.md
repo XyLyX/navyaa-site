@@ -53,7 +53,9 @@ We're taught, from a young age, to think of death as a finale — loud, dramatic
 
 A short poem has been sitting with me for weeks because of how precisely it names this:
 
-> *I died quietly,painfully,a death no one grievedbecauseI kept breathing,and breathing looks a lot like livingif you're not paying attention.*
+> *I died quietly, painfully, a death no one grieved becauseI kept breathing,* 
+>
+> *and breathing looks a lot like living if you're not paying attention.*
 
 What the poem is naming, I think, is a kind of masquerade — not a deliberate deception, but a survival mechanism so effective it fools even the person performing it. If you're showing up to work, replying to messages, and keeping pace with the group chat, the world reasonably assumes you're alive in every sense that counts. But biological function and human vitality are not the same thing, and the gap between them can widen for years without anyone, including you, noticing it happen. Breathing, in this sense, is just the engine idling — technically running, going nowhere. True living asks for more: engagement, hope, and the sense of being tethered to something or someone beyond the next task on the list. When those things quietly disappear, a person can undergo a total internal implosion while still, outwardly, performing every function of a normal life. Because there's no visible wreckage, there's nothing that reads, from the outside, as needing to be grieved.
 
