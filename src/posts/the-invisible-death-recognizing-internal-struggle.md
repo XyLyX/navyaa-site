@@ -53,7 +53,7 @@ We're taught, from a young age, to think of death as a finale — loud, dramatic
 
 A short poem has been sitting with me for weeks because of how precisely it names this:
 
-> *I died quietly,painfully,a death no one grieved becauseI kept breathing,* 
+> *I died quietly, painfully, a death no one grieved becauseI kept breathing,* 
 >
 > *and breathing looks a lot like living if you're not paying attention.*
 
