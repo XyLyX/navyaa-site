@@ -31,7 +31,7 @@ ai_assist: "{\"category\":\"Unfiltered\",\"mood\":\"Angry\",\"secondary_mood\":\
   important?\",\"answer\":\"Environmental responsibility is crucial for our
   health and survival, as our well-being is directly linked to the health of our
   planet.\"}],\"link_placements\":[]}"
-pillar: Unfiltered
+pillar: Life
 mood: Angry
 secondary_mood: Contemplative
 intensity: 7
