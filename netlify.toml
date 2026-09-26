@@ -313,3 +313,8 @@
   from = "/why-we-stay-in-relationships-long/"
   to = "/why-we-stay-in-relationships-that-no-longer-work/"
   status = 301
+
+[[redirects]]
+  from = "/unfiltered/"
+  to = "/life/"
+  status = 301

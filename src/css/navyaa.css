@@ -2,7 +2,7 @@
 Theme Name: Navyaa
 Theme URI: https://navyaa.blog
 Author: Navyaa
-Description: Custom editorial theme for Navyaa — cream, charcoal, burgundy and olive, built around the five pillars (Love, Self, Life, Soul, Unfiltered).
+Description: Custom editorial theme for Navyaa — cream, charcoal, burgundy and olive, built around the four pillars (Love, Self, Life, Soul).
 Version: 1.0.0
 Text Domain: navyaa
 Requires PHP: 7.4
@@ -80,7 +80,7 @@ button, input { font-family: 'DM Sans', Helvetica, Arial, sans-serif; }
 
 /* ---------- Explore grid ---------- */
 .nvy-section { padding: 72px 56px; display: flex; flex-direction: column; gap: 34px; }
-.nvy-explore-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 28px; }
+.nvy-explore-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
 .nvy-explore-tile-img { position: relative; width: 100%; height: 150px; overflow: hidden; background: linear-gradient(150deg, #77736D 0%, #151515 100%); }
 .nvy-explore-tile-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .nvy-explore-tile h3 { font-size: 19px; font-weight: 600; letter-spacing: 1px; }

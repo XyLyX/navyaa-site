@@ -17,13 +17,12 @@
   };
 })();
 
-const PILLARS = ["Love", "Self", "Life", "Soul", "Unfiltered"];
+const PILLARS = ["Love", "Self", "Life", "Soul"];
 const PILLAR_SUBS = {
   Love: "Relationships, Attachment, Heartbreak",
   Self: "Identity, Loneliness, Overthinking",
   Life: "Freedom, Ambition, Reinvention",
   Soul: "Meaning, Mortality, Spirituality",
-  Unfiltered: "Opinions, Society, The real stuff",
 };
 
 function slugify(str) {

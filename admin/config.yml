@@ -33,9 +33,6 @@ collections:
       - label: "Soul"
         field: pillar
         pattern: "Soul"
-      - label: "Unfiltered"
-        field: pillar
-        pattern: "Unfiltered"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Publish date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: true }
@@ -50,7 +47,7 @@ collections:
       - label: "Pillar"
         name: "pillar"
         widget: "select"
-        options: ["Love", "Self", "Life", "Soul", "Unfiltered"]
+        options: ["Love", "Self", "Life", "Soul"]
       - label: "Cluster"
         name: "cluster"
         widget: "select"

@@ -12,10 +12,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ seo_title or title or "Navyaa" }}{% if title and not seo_title %} — Navyaa{% endif %}</title>
-<meta name="description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life, Soul and the Unfiltered truth in between.' }}">
+<meta name="description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life and Soul, and the honest truth in between.' }}">
 <link rel="canonical" href="https://navyaa.blog{{ page.url }}">
 <meta property="og:title" content="{{ seo_title or title or 'Navyaa' }}">
-<meta property="og:description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life, Soul and the Unfiltered truth in between.' }}">
+<meta property="og:description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life and Soul, and the honest truth in between.' }}">
 <meta property="og:type" content="{% if pillar %}article{% else %}website{% endif %}">
 {% set ogImageRaw = image or '/images/default-og-image.jpg' %}
 {% if '://' in ogImageRaw %}
@@ -26,7 +26,7 @@
 <meta property="og:image" content="{{ ogImageUrl }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ seo_title or title or 'Navyaa' }}">
-<meta name="twitter:description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life, Soul and the Unfiltered truth in between.' }}">
+<meta name="twitter:description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life and Soul, and the honest truth in between.' }}">
 <meta name="twitter:image" content="{{ ogImageUrl }}">
 <script type="application/ld+json">
 {

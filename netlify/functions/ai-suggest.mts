@@ -1,6 +1,6 @@
 import type { Context, Config } from "@netlify/functions";
 
-const PILLARS = ["Love", "Self", "Life", "Soul", "Unfiltered"];
+const PILLARS = ["Love", "Self", "Life", "Soul"];
 const MOODS = [
   "Melancholic", "Nostalgic", "Romantic", "Reflective", "Contemplative",
   "Hopeful", "Restless", "Angry", "Playful", "Peaceful",
@@ -192,7 +192,7 @@ export default async (req: Request, context: Context) => {
     : "No existing posts were provided to link to.";
 
   const systemPrompt =
-    "You are the editorial assistant for Navyaa, a personal essay blog about Love, Self, Life, Soul and Unfiltered truths. " +
+    "You are the editorial assistant for Navyaa, a personal essay blog about Love, Self, Life and Soul. " +
     "You suggest metadata AND structure for a new post. You NEVER invent facts about the author. " +
     "The writer's literary voice must be preserved -- your suggestions are proposals the writer reviews and " +
     "manually applies, never auto-published text. " +

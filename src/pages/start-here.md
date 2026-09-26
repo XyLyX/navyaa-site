@@ -12,8 +12,6 @@ paths:
     href: "/life/"
   - label: "If you're searching for meaning"
     href: "/soul/"
-  - label: "If you just want the truth, unfiltered"
-    href: "/unfiltered/"
 ---
 
 <p>Welcome</p>
