@@ -38,30 +38,31 @@ const CLUSTERS = [
 // Melancholic, etc.) must now drive the image's emotional register too,
 // not be overridden by one fixed tone.
 const IMAGE_STYLE_GUIDE =
-  "Editorial, literary-journal photography — never stock-photo or wellness-blog looking. " +
-  "Muted cream, charcoal, burgundy and olive tones. Soft natural or film-like light. Never staged smiling " +
-  "people, never a cheesy stock-photo grin — but the EMOTIONAL REGISTER of the image must match the mood " +
-  "and secondary_mood you assigned this essay elsewhere in your response, not a fixed default. A witty, " +
-  "self-deprecating or Playful essay should produce an image with warmth, wry humor, or lightness in it — " +
-  "NOT a somber, melancholic treatment. Reserve genuinely quiet/melancholic imagery for essays whose mood " +
-  "actually is Melancholic, Nostalgic or similarly heavy — do not apply that tone universally. No text, no " +
-  "watermarks, no logos. " +
-  "CRITICAL — SUBJECT AND SETTING FROM THE ESSAY, NOT A STOCK SCENE: identify where this essay's story " +
-  "actually happens (a kitchen, a car, a hospital corridor, a childhood bedroom, a garden, a parking lot) and " +
-  "the season/time/era it implies, then pick the one concrete object or gesture the essay actually describes " +
-  "within that setting. " +
-  "CRITICAL — BANNED COMPOSITION: do NOT render this as 'an object resting on a table or counter, framed " +
-  "beside a window with the outside world visible through the glass.' That specific composition has been " +
-  "overused regardless of subject matter and must not be repeated. Instead, explicitly choose ONE of these " +
-  "different camera framings, picking whichever best fits this essay, and state your choice in the prompt: " +
-  "an extreme close-up filling most of the frame with only a soft blurred background and no window in view; " +
-  "a top-down flat-lay looking straight down at a surface; a partial view through a doorway or half-open " +
-  "door; a shot with the subject deliberately off-center to one third of the frame against a plain wall or " +
-  "dark background; or an outdoor setting with no interior window framing at all. Vary this choice between " +
-  "essays — do not let every image default to the same framing either. " +
-  "Composition: 16:9 landscape frame, roughly 1920x1080 or larger — within whichever framing you chose above, " +
-  "leave breathing room on both left and right edges, since the site crops this same image into a wide " +
-  "homepage banner, a narrower article header and square-ish cards, always from the center outward.";
+  "Editorial, literary-journal photography or painterly cinematic realism — never stock-photo or wellness-blog looking. " +
+  "Muted cream, charcoal, burgundy and olive tones. Soft natural or film-like light, subtle grain. No text, no " +
+  "watermarks, no logos, no visible faces, never staged smiling people. " +
+  "THE IMAGE TRANSLATES THE ESSAY'S FEELING — IT DOES NOT ILLUSTRATE ITS CONTENT. Never build the image from a " +
+  "list of objects or places the essay happens to mention (kitchens, coffee mugs, notebooks, desks, empty rooms, " +
+  "windows). A literal inventory of props is a failure. " +
+  "METHOD: first identify the essay's inner conflict (what the writer is wrestling with beneath the surface) and " +
+  "its emotional turn. Then choose ONE visual metaphor that embodies that conflict through relationship, not " +
+  "inventory: scale (a small figure against vast space), distance, a threshold or doorway, direction of travel, " +
+  "stillness against motion, light against dark, reflection, weight, or something being left behind or approached. " +
+  "The scene needs: a subject (usually a human figure seen from behind, in silhouette, or partially; or one " +
+  "single symbolic element), an emotional state expressed through posture, a clear light source that carries " +
+  "meaning, the scale of the environment relative to the subject, and ONE contrasting element that creates " +
+  "tension (crowd vs. solitude, motion vs. stillness, warm vs. cold). Use at most one or two concrete objects, " +
+  "and only when they carry the metaphor. " +
+  "EMOTIONAL REGISTER must follow the mood and secondary_mood you assigned elsewhere in your response. A Playful, " +
+  "witty or self-deprecating essay gets warmth, wry humor and lightness; reserve somber, heavy imagery for " +
+  "essays that are genuinely Melancholic, Nostalgic or similarly weighty. " +
+  "FRAMING: vary it between essays and state your choice — a wide shot with a small figure in a vast space; a " +
+  "silhouette against light; an over-the-shoulder view; an extreme close-up of a hand or gesture; a top-down " +
+  "view; a view through a doorway; an off-center subject with generous negative space; an outdoor or urban " +
+  "scene with motion blur. Do NOT default to an interior with a window. " +
+  "Composition: 16:9 landscape frame, roughly 1920x1080 or larger, subject centered with breathing room on " +
+  "both left and right edges, since the site crops this same image into a wide homepage banner, a narrower " +
+  "article header and square-ish cards, always from the center outward.";
 
 // Strip basic HTML down to plain text before sending to the model —
 // keeps the prompt compact and avoids leaking markup into suggestions.
@@ -214,8 +215,10 @@ export default async (req: Request, context: Context) => {
     `"tags":["3-5 lowercase tags"],` +
     `"featured_quote":"the single strongest sentence pulled verbatim from the body, or empty string if too short",` +
     `"slug":"a kebab-case URL slug derived from the title — lowercase, hyphen-separated, no punctuation, 3-7 words, under 60 characters",` +
-    `"image_prompt":"one ready-to-use AI image-generation prompt for this essay's featured image, following the house style and composition rules described above. End it with the literal text ` +
-    `'16:9 landscape, centered composition, 1920x1080' so the ratio travels with the prompt wherever it's pasted. 2-4 sentences.",` +
+    `"emotional_core":"one sentence naming the essay's inner conflict and emotional turn -- NOT its topic or setting",` +
+    `"visual_metaphor":"one sentence describing a single metaphorical image (relationship of figure, space, light, motion) that embodies the emotional core, with no inventory of props from the text",` +
+    `"image_prompt":"one ready-to-use AI image-generation prompt built from the visual_metaphor above (never a list of objects from the text), following the house style. Describe subject and posture, light source, environment scale and the contrasting element. End it with the literal text ` +
+    `'16:9 landscape, centered composition, 1920x1080' so the ratio travels with the prompt wherever it's pasted. 4-6 sentences.",` +
     `"cluster":"the best-fit cluster name from the list above, or \\"None\\"",` +
     `"cluster_role":"\\"supporting\\" if a cluster was chosen, otherwise empty string",` +
     `"h2_outline":["5-7 section headings for this essay, following a searchable-but-literary structure: a quick-answer opener, the deep analysis in the writer's own words, a practical/what-to-do section, and a closing reflection -- adapt the exact headings to what this specific essay is actually about"],` +
@@ -235,7 +238,7 @@ export default async (req: Request, context: Context) => {
       body: JSON.stringify({
         model,
         response_format: { type: "json_object" },
-        temperature: 0.6,
+        temperature: 0.75,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
@@ -287,7 +290,10 @@ export default async (req: Request, context: Context) => {
     if (typeof parsed.image_prompt !== "string") {
       parsed.image_prompt = "";
     }
-    parsed.image_prompt = parsed.image_prompt.slice(0, 600);
+    parsed.image_prompt = parsed.image_prompt.slice(0, 1100);
+    // Reasoning-only fields: they make the model think before writing the prompt; not needed by the CMS.
+    delete parsed.emotional_core;
+    delete parsed.visual_metaphor;
 
     // Cluster must be a real cluster name or "None" -- never trust the
     // model's own string verbatim.
