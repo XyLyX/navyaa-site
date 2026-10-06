@@ -176,11 +176,3 @@ Moving forward doesn't mean everything becomes easy. It means loving with care, 
 Love is meant to be warm. It's meant to be a place you can rest.
 
 And it gets lighter when you do.
-
-- - -
-
-**Notes:**
-
-* The essay uses your seven headings exactly, in your order, and is written in an honest first-person voice. The first-person details are general reflections, not specific events, so nothing claims a biography you haven't confirmed.
-* It's long, around 1,500 words. I can trim it for a tighter read or push it rawer with a specific scene.
-* I can also generate the SEO fields (meta description, key takeaway, FAQ) or an image prompt for it.
