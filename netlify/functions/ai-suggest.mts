@@ -39,28 +39,26 @@ const CLUSTERS = [
 // not be overridden by one fixed tone.
 const IMAGE_STYLE_GUIDE =
   "Editorial, literary-journal photography or painterly cinematic realism — never stock-photo or wellness-blog looking. " +
-  "Muted cream, charcoal, burgundy and olive tones. Soft natural or film-like light, subtle grain. No text, no " +
-  "watermarks, no logos, no visible faces, never staged smiling people. " +
-  "THE IMAGE TRANSLATES THE ESSAY'S FEELING — IT DOES NOT ILLUSTRATE ITS CONTENT. Never build the image from a " +
-  "list of objects or places the essay happens to mention (kitchens, coffee mugs, notebooks, desks, empty rooms, " +
-  "windows). A literal inventory of props is a failure. " +
-  "METHOD: first identify the essay's inner conflict (what the writer is wrestling with beneath the surface) and " +
-  "its emotional turn. Then choose ONE visual metaphor that embodies that conflict through relationship, not " +
-  "inventory: scale (a small figure against vast space), distance, a threshold or doorway, direction of travel, " +
-  "stillness against motion, light against dark, reflection, weight, or something being left behind or approached. " +
-  "The scene needs: a subject (usually a human figure seen from behind, in silhouette, or partially; or one " +
-  "single symbolic element), an emotional state expressed through posture, a clear light source that carries " +
-  "meaning, the scale of the environment relative to the subject, and ONE contrasting element that creates " +
-  "tension (crowd vs. solitude, motion vs. stillness, warm vs. cold). Use at most one or two concrete objects, " +
-  "and only when they carry the metaphor. " +
+  "Muted cream, charcoal, burgundy and olive tones, subtle film grain. No text, no watermarks, no logos, no " +
+  "visible faces, never staged smiling people. " +
+  "THE IMAGE MUST BE BORN FROM THIS ESSAY'S BODY. Before writing the prompt, read the essay and extract what is " +
+  "SPECIFIC to it: its most distinctive image or phrase, its central tension, and its emotional turn (quote the " +
+  "essay's own words in body_evidence). The image translates that specific feeling into ONE visual metaphor; it " +
+  "does not illustrate the essay literally (no kitchens, mugs, notebooks, desks, empty rooms) and it must not be " +
+  "a generic 'sad / healing / love' picture that could sit on any essay. Test: if the image could illustrate a " +
+  "different essay on the blog, it is wrong -- rework it until it could only belong to this one. " +
+  "Express the metaphor through relationship, not inventory: scale, distance, tension between two elements, " +
+  "weight, decay or growth, something held, left behind, approached or released. At most one or two concrete " +
+  "objects, only if they carry the metaphor. " +
+  "SUBJECT LENS: you are given a short menu of lenses. Pick the one that best fits THIS essay's body and use it " +
+  "as the subject of the image. " +
+  "BANNED DEFAULTS (overused; never use unless the chosen lens explicitly asks for it): a lone person seen from " +
+  "behind facing a window, doorway, corridor, horizon or glow; a band or shaft of warm light falling across a " +
+  "floor; an empty room or bed-edge scene; a figure on a platform or road at dawn; a long corridor of doors. " +
   "EMOTIONAL REGISTER must follow the mood and secondary_mood you assigned elsewhere in your response. A Playful, " +
   "witty or self-deprecating essay gets warmth, wry humor and lightness; reserve somber, heavy imagery for " +
   "essays that are genuinely Melancholic, Nostalgic or similarly weighty. " +
-  "FRAMING: vary it between essays and state your choice — a wide shot with a small figure in a vast space; a " +
-  "silhouette against light; an over-the-shoulder view; an extreme close-up of a hand or gesture; a top-down " +
-  "view; a view through a doorway; an off-center subject with generous negative space; an outdoor or urban " +
-  "scene with motion blur. Do NOT default to an interior with a window. " +
-  "Composition: 16:9 landscape frame, roughly 1920x1080 or larger, subject centered with breathing room on " +
+  "Composition: 16:9 landscape frame, roughly 1920x1080 or larger, main subject centered with breathing room on " +
   "both left and right edges, since the site crops this same image into a wide homepage banner, a narrower " +
   "article header and square-ish cards, always from the center outward.";
 
@@ -119,6 +117,41 @@ function resolveLinkedTitles(
   }
 
   return { verified, unresolved };
+}
+
+// Forced visual variety. A language model left to its own devices converges on
+// one "safe" image (a lone figure, a glow, a window). So the code -- not the
+// prompt -- assigns each essay a subject LENS (picked deterministically from
+// the title, so different essays land on different lenses) and a LIGHT
+// (random, so re-running "Analyze" on the same essay gives a fresh option).
+const IMAGE_LENSES = [
+  "an extreme close-up of hands in a small, telling gesture (holding, releasing, folding, reaching)",
+  "a vast natural landscape (sea, desert, fog-covered hills, salt flats) where any human is tiny or absent",
+  "an architectural or urban detail: a staircase, a bridge, an empty tram stop, wet pavement, a stairwell",
+  "one symbolic object alone in an unexpected place, with strong negative space around it",
+  "water, weather or sky as the whole subject: rain, tide, mist, drifting clouds, storm light",
+  "two elements held in tension across empty space (two chairs, two shoes, two trees, two shadows)",
+  "a texture or material study: cracked earth, folded fabric, frayed rope, peeling paint, moss on stone",
+  "a plant study: a single branch, leaves, flowers opening or wilting, foliage shadows on a wall",
+  "motion blur in a street or transit scene where one single element stays sharp",
+  "a top-down view of one deliberate arrangement of things on a surface",
+  "an animal or bird in its own world, used as an emblem of the feeling",
+  "a person in profile or three-quarter view, mid-action (walking, carrying, turning), in an open or crowded space",
+];
+const IMAGE_LIGHTS = [
+  "pale overcast morning light",
+  "low golden late-afternoon sun with long shadows",
+  "cool blue dusk with one small warm practical light",
+  "hard midday sun with sharp-edged shadows",
+  "lamp- or candlelight in surrounding darkness",
+  "silver mist-diffused light, low contrast",
+  "night, lit by a single streetlight or window glow far away",
+  "storm light: dramatic sky breaking over a muted landscape",
+];
+function hashString(str: string): number {
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) >>> 0;
+  return h;
 }
 
 export default async (req: Request, context: Context) => {
@@ -185,6 +218,11 @@ export default async (req: Request, context: Context) => {
 
   const model = Netlify.env.get("OPENAI_MODEL") || "gpt-4o-mini";
 
+  // Offer a random subset of lenses so the model cannot default to one scene,
+  // but let the essay body decide which of the offered lenses fits.
+  const lensOptions = [...IMAGE_LENSES].sort(() => Math.random() - 0.5).slice(0, 5);
+  const light = IMAGE_LIGHTS[Math.floor(Math.random() * IMAGE_LIGHTS.length)];
+
   const clusterList = CLUSTERS.map((c) => `${c.name} (${c.pillar})`).join(", ");
 
   const linkContext = verifiedLinks.length
@@ -203,6 +241,9 @@ export default async (req: Request, context: Context) => {
   const userPrompt =
     `Title: ${title}\n\nBody:\n${content}\n\n` +
     `${linkContext}\n\n` +
+    `IMAGE DIRECTION: the image must come from THIS essay's body, not a stock scene. Choose the ONE subject lens that best fits this essay's specific content and feeling, from these options only: ${lensOptions.map((l, i) => `(${i + 1}) ${l}`).join("; ")}. LIGHT = ${light}.
+
+` +
     `Available content clusters (pick the closest fit, or "None" if this essay doesn't fit any): ${clusterList}\n\n` +
     "Return a JSON object with exactly these keys: " +
     `{"category":"one of: ${PILLARS.join(", ")}",` +
@@ -215,9 +256,11 @@ export default async (req: Request, context: Context) => {
     `"tags":["3-5 lowercase tags"],` +
     `"featured_quote":"the single strongest sentence pulled verbatim from the body, or empty string if too short",` +
     `"slug":"a kebab-case URL slug derived from the title — lowercase, hyphen-separated, no punctuation, 3-7 words, under 60 characters",` +
+    `"body_evidence":["2-3 short phrases or images quoted from THIS essay's body that are distinctive to it, plus one line naming its central tension"],` +
+    `"chosen_lens":"copy the number and text of the one lens you chose from the IMAGE DIRECTION options",` +
     `"emotional_core":"one sentence naming the essay's inner conflict and emotional turn -- NOT its topic or setting",` +
-    `"visual_metaphor":"one sentence describing a single metaphorical image (relationship of figure, space, light, motion) that embodies the emotional core, with no inventory of props from the text",` +
-    `"image_prompt":"one ready-to-use AI image-generation prompt built from the visual_metaphor above (never a list of objects from the text), following the house style. Describe subject and posture, light source, environment scale and the contrasting element. End it with the literal text ` +
+    `"visual_metaphor":"one sentence describing a single metaphorical image built through your chosen lens and the assigned LIGHT, transforming at least one distinctive image or phrase from body_evidence into metaphor, so the image could only belong to THIS essay, with no inventory of props from the text",` +
+    `"image_prompt":"one ready-to-use AI image-generation prompt built from the visual_metaphor above (never a list of objects from the text), following the house style. Describe the subject (per your chosen lens), the light (per LIGHT), the scale, and one contrasting element. End it with the literal text ` +
     `'16:9 landscape, centered composition, 1920x1080' so the ratio travels with the prompt wherever it's pasted. 4-6 sentences.",` +
     `"cluster":"the best-fit cluster name from the list above, or \\"None\\"",` +
     `"cluster_role":"\\"supporting\\" if a cluster was chosen, otherwise empty string",` +
@@ -294,6 +337,8 @@ export default async (req: Request, context: Context) => {
     // Reasoning-only fields: they make the model think before writing the prompt; not needed by the CMS.
     delete parsed.emotional_core;
     delete parsed.visual_metaphor;
+    delete parsed.body_evidence;
+    delete parsed.chosen_lens;
 
     // Cluster must be a real cluster name or "None" -- never trust the
     // model's own string verbatim.
