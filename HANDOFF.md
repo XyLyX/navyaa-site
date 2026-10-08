@@ -54,3 +54,6 @@ Go to `navyaa.blog/admin`, log in with GitHub, click **New Essay**. Write it, cl
 ## If something breaks
 
 Come back to this conversation and tell me what's going wrong — I can usually diagnose it from a screenshot or the Netlify deploy log.
+
+## STRICT RULE: typography and layout are locked
+Fonts (Cormorant Garamond headings, DM Sans body), the 720px article column, 17px text and 1.85 line-height must not change unless the owner explicitly asks. Do not add new heading levels or layout elements without matching the theme CSS first.

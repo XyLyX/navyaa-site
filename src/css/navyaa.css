@@ -150,6 +150,10 @@ button, input { font-family: 'DM Sans', Helvetica, Arial, sans-serif; }
 .nvy-article-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .nvy-article-body { max-width: 720px; margin: 0 auto; padding: 56px 56px 24px; font-size: 17px; line-height: 1.85; }
 .nvy-article-body p { margin: 0 0 22px; }
+/* === LOCKED TYPOGRAPHY: do not change fonts, sizes or layout without explicit instruction from the owner === */
+.nvy-article-body h2 { font-size: 28px; line-height: 1.3; font-weight: 500; margin: 48px 0 16px; }
+.nvy-article-body h3 { font-size: 22px; line-height: 1.3; font-weight: 500; margin: 34px 0 12px; }
+.nvy-article-body em { font-style: italic; }
 .nvy-more { max-width: 720px; margin: 0 auto; padding: 24px 56px 64px; }
 .nvy-more .divider { height: 1px; background: #D8D1C8; margin-bottom: 32px; }
 
