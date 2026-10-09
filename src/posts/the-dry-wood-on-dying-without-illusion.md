@@ -58,7 +58,7 @@ Wet wood makes smoke, and smoke makes eyes water. People will gather, the smoke 
 
 I do not want that misunderstanding.
 
-### The Comfort of Borrowed Tears
+## The Comfort of Borrowed Tears
 
 It is a strange thing to guard against, a kindness I might receive by accident. Tears caused by smoke look exactly like tears caused by sorrow, and the room would not know the difference. Neither would the people in it. They might even leave believing something sweet and untrue.
 
@@ -66,7 +66,7 @@ I would rather go in the dry truth, even if that truth is quieter, even if it is
 
 I keep sitting with this.
 
-### How We Manage the Look of Death
+## How We Manage the Look of Death
 
 So much of what we do around death is about managing how it looks. We reach for the right words, the right expression, and the right amount of visible grief. We fear the silence that might follow if no one cries. We protect the appearance of mattering.
 
@@ -74,7 +74,7 @@ Almost no one says the simpler, harder thing: *I do not want the appearance. I w
 
 This is not bitterness. It is closer to the opposite. Real grief, even a small amount, is worth more than a crowd's worth of staged grief. A single person who is actually moved is a fuller farewell than a hundred who are merely watering their eyes on cue. And if no one is moved, that is information too. It is painful, but it is true, and truth is the only thing I am trying to be loyal to at the end.
 
-### What the Stoics Already Knew
+## What the Stoics Already Knew
 
 The Stoics have walked beside this thought for a long time.
 
@@ -88,7 +88,7 @@ They are all pointing at the same place I am trying to stand. Stop negotiating w
 
 The wood is exactly this kind of preparation. It is small, practical, and measurable. It does not argue with death. It simply makes the ground ready.
 
-### The Fear Beneath the Fear
+## The Fear Beneath the Fear
 
 When I look closely, I notice how little of my fear of death has ever been about the end itself. It has been fear of unfinished things. Fear of being misunderstood. Fear of the story that will be told about me when I am no longer here to correct it. Fear that the tears, or the absence of them, will mean something I cannot bear.
 
@@ -98,7 +98,7 @@ I am trying to walk past those fears. I am trying to decide that the only thing 
 
 There is a strange and steadying peace in that decision. Once I stop trying to control the room, I am free to simply be honest in it.
 
-### What Else Counts as Dry Wood
+## What Else Counts as Dry Wood
 
 I ask myself what else belongs in that category. What small, practical preparations would free me from the need for appearance? Which conversations should happen now, while I can say them plainly? Which things should I stop explaining, and which should I finally explain? What illusions am I still protecting? What smoke am I still willing to create so that the people around me will react the way I hope they will?
 
@@ -106,18 +106,18 @@ Dry wood, I am beginning to think, is anything that burns clean. It is a life ar
 
 I do not have all the answers yet.
 
-### A Room Already Being Cleared
+## A Room Already Being Cleared
 
 But something has shifted. The thought of death feels less like a cliff edge and more like a room I have already started clearing. I keep returning to the image of that measured wood: not dramatic, not tragic, just exact. Enough. No more, no less.
 
 And the quiet insistence that, in the end, the eyes that water should do so for the right reason.
 
-Or not at all.
+**Or not at all.**
 
 That is what I am practicing toward:
 
 To leave without needing the room to perform grief for me.
 
-To go with dry wood,
-clear eyes,
-and no final misunderstanding.
+**To go with dry wood,**  
+**clear eyes,**  
+**and no final misunderstanding.**
