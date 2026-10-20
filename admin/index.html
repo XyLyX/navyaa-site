@@ -19,12 +19,11 @@
   <script>
     // ---------------------------------------------------------------
     // Navyaa Intelligence widget: an "Analyze with AI" panel that calls
-    // our Netlify Function (which calls OpenAI) and shows suggestions
-    // for the writer to read and apply themselves to the real fields
-    // below (Pillar, Mood, Excerpt, Tags, Slug, Image prompt, etc). It
-    // never writes those fields for you and nothing publishes
-    // automatically — you always review and set them yourself before
-    // hitting Publish.
+    // our Netlify Function (which calls OpenAI), then fills the suggestions
+    // into the real fields below (Pillar, Mood, Excerpt, Tags, Slug, FAQ,
+    // etc) and weaves links to the chosen existing posts into the essay.
+    // Nothing publishes automatically — the writer reviews the filled-in
+    // fields and then hits Save / Publish.
     // ---------------------------------------------------------------
     var h = window.h; // Decap CMS exposes createElement as `h` via CreateReactClass/React under the hood
 
@@ -35,99 +34,335 @@
       }
     }
 
-    // On a brand-new, not-yet-saved entry, Decap doesn't always sync your
-    // typed values into this widget's `entry` prop in time for Analyze to
-    // read them — even though the title/body are visibly filled in. As a
-    // fallback, read the actual on-screen field directly by its label so
-    // Analyze works before your first Save too.
-    function getFieldValueByLabel(labelText) {
-      var labels = Array.prototype.slice.call(document.querySelectorAll("label"));
-      var label = labels.filter(function (l) {
-        return l.textContent.trim().toLowerCase().indexOf(labelText.toLowerCase()) === 0;
-      })[0];
-      if (!label) return "";
-
-      var forId = label.getAttribute("for");
-      var el = forId ? document.getElementById(forId) : null;
-      if (el) {
-        if ("value" in el) return el.value || "";
-        if (el.textContent) return el.textContent;
-      }
-
-      // Rich text / markdown editors: the labeled id doesn't land on a
-      // real element, so look for a Slate editor or textarea near the label.
-      var node = label.closest("div");
-      for (var i = 0; i < 5 && node; i++) {
-        var editable = node.querySelector('[data-slate-editor="true"], textarea');
-        if (editable) return ("value" in editable ? editable.value : editable.textContent) || "";
-        node = node.parentElement;
-      }
-      return "";
-    }
-
-    // Scroll a field into view and flash a highlight around it. Deliberately
-    // draws the highlight as a SEPARATE floating overlay positioned over the
-    // target, rather than mutating the target field's own style/outline --
-    // Decap's form fields are React-managed DOM nodes, and directly setting
-    // inline styles on them (then reverting via setTimeout) risks colliding
-    // with React's own reconciliation if that field re-renders in between,
-    // which can surface as a "removeChild: not a child of this node" error.
-    // An overlay we create and remove ourselves never touches React's nodes,
-    // so it can't conflict with them.
-    function scrollToFieldByLabel(labelText) {
-      var labels = Array.prototype.slice.call(document.querySelectorAll("label"));
-      var label = labels.filter(function (l) {
-        return l.textContent.trim().toLowerCase().indexOf(labelText.toLowerCase()) === 0;
-      })[0];
-      if (!label) return;
-
-      var target = label;
-      var forId = label.getAttribute("for");
-      var el = forId ? document.getElementById(forId) : null;
-      if (el) {
-        target = el;
-      } else {
-        var node = label.closest("div");
-        for (var i = 0; i < 5 && node; i++) {
-          var editable = node.querySelector('[data-slate-editor="true"], textarea, select, input');
-          if (editable) { target = editable; break; }
-          node = node.parentElement;
+    // ---------------------------------------------------------------
+    // Reading and writing the entry being edited.
+    //
+    // Decap gives a custom widget no way to touch OTHER fields, so we reach
+    // the app's Redux store (found through React's own root, since Decap
+    // doesn't export it). Decap is pinned to an exact version above, so the
+    // internals used here can't shift under us; every call is guarded and
+    // the panel falls back to showing suggestions if anything is missing.
+    // ---------------------------------------------------------------
+    var cachedStore = null;
+    function getStore() {
+      if (cachedStore) return cachedStore;
+      try {
+        var root = document.getElementById("nc-root");
+        if (!root) return null;
+        var key = Object.keys(root).filter(function (k) { return k.indexOf("__reactContainer$") === 0; })[0];
+        var stack = key ? [root[key]] : [];
+        var seen = 0;
+        while (stack.length && seen++ < 50000) {
+          var f = stack.pop();
+          if (!f) continue;
+          var p = f.memoizedProps;
+          if (p && p.store && typeof p.store.dispatch === "function" && typeof p.store.getState === "function") {
+            cachedStore = p.store;
+            return cachedStore;
+          }
+          if (f.sibling) stack.push(f.sibling);
+          if (f.child) stack.push(f.child);
         }
-      }
-
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-
-      // Give the smooth scroll a moment to land, then measure and draw the
-      // overlay -- a plain, self-owned div, appended to and removed from
-      // document.body only by this function, never touching `target` itself.
-      setTimeout(function () {
-        var rect = target.getBoundingClientRect();
-        var overlay = document.createElement("div");
-        overlay.style.position = "fixed";
-        overlay.style.left = (rect.left - 3) + "px";
-        overlay.style.top = (rect.top - 3) + "px";
-        overlay.style.width = (rect.width + 6) + "px";
-        overlay.style.height = (rect.height + 6) + "px";
-        overlay.style.border = "3px solid #6E3035";
-        overlay.style.boxShadow = "0 0 0 4px rgba(110, 48, 53, 0.15)";
-        overlay.style.borderRadius = "4px";
-        overlay.style.pointerEvents = "none";
-        overlay.style.zIndex = "9999";
-        overlay.style.transition = "opacity 0.4s ease";
-        document.body.appendChild(overlay);
-        setTimeout(function () {
-          overlay.style.opacity = "0";
-          setTimeout(function () {
-            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-          }, 400);
-        }, 1400);
-      }, 350);
+      } catch (e) {}
+      return null;
     }
+
+    // The live draft's field value, straight from the store -- always the
+    // current markdown, even on a brand-new entry that hasn't been saved.
+    function getDraftValue(name) {
+      var store = getStore();
+      if (!store) return "";
+      try {
+        var v = store.getState().entryDraft.getIn(["entry", "data", name]);
+        return typeof v === "string" ? v : "";
+      } catch (e) { return ""; }
+    }
+
+    // Write several fields into the draft at once. Decap's editors only read
+    // their value when they first mount, so we re-load the draft through its
+    // own "restore backup" path: that replaces the entry data AND remounts the
+    // form, so the rich-text body, selects and lists all show the new values.
+    function applyToDraft(patch) {
+      var store = getStore();
+      if (!store) return false;
+      try {
+        var entry = store.getState().entryDraft.get("entry").toJS();
+        entry.data = Object.assign({}, entry.data, patch);
+        store.dispatch({ type: "DRAFT_LOCAL_BACKUP_RETRIEVED", payload: { entry: entry } });
+        store.dispatch({ type: "DRAFT_CREATE_FROM_LOCAL_BACKUP" });
+        return true;
+      } catch (e) { return false; }
+    }
+
+    // ---------------------------------------------------------------
+    // Weaving links to existing posts into the essay body (markdown).
+    // The AI only names a phrase that already exists in the essay; we wrap
+    // that phrase in a link to the verified URL. The writer's wording is
+    // never changed. If no suitable phrase is found, the link goes into a
+    // closing "Related reading" line instead.
+    // ---------------------------------------------------------------
+    function weaveLinks(body, placements) {
+      var out = body || "";
+      var report = [];
+      var leftovers = [];
+      (placements || []).forEach(function (lp) {
+        if (!lp || !lp.url) return;
+        if (out.indexOf("](" + lp.url + ")") !== -1) {
+          report.push({ title: lp.title, how: "already linked" });
+          return;
+        }
+        var anchor = (lp.anchor_text || "").trim();
+        var placed = false;
+        if (anchor) {
+          var from = 0, idx;
+          while (!placed && (idx = out.indexOf(anchor, from)) !== -1) {
+            var before = out.slice(0, idx);
+            var after = out.slice(idx + anchor.length);
+            var lineStart = before.lastIndexOf("\n") + 1;
+            var inHeading = /^\s*#/.test(out.slice(lineStart, idx));
+            var inLink = /\[[^\]\n]*$/.test(before) || after.charAt(0) === "]";
+            if (!inHeading && !inLink) {
+              out = before + "[" + anchor + "](" + lp.url + ")" + after;
+              placed = true;
+              report.push({ title: lp.title, how: "linked the phrase “" + anchor + "”" });
+            } else {
+              from = idx + 1;
+            }
+          }
+        }
+        if (!placed) {
+          leftovers.push("[" + lp.title + "](" + lp.url + ")");
+          report.push({ title: lp.title, how: "added to a “Related reading” line at the end (no natural phrase found)" });
+        }
+      });
+      if (leftovers.length) {
+        out = out.replace(/\s+$/, "") + "\n\n*Related reading: " + leftovers.join(" · ") + "*";
+      }
+      return { body: out, report: report };
+    }
+
+    // Everything the AI suggested that has a real field, ready to write into
+    // the draft. Only non-empty suggestions are applied, so a blank answer
+    // never wipes something the writer typed.
+    var PILLAR_VALUES = ["Love", "Self", "Life", "Soul"];
+    var MOOD_VALUES = ["Melancholic", "Nostalgic", "Romantic", "Reflective", "Contemplative", "Hopeful", "Restless", "Angry", "Playful", "Peaceful"];
+    function buildPatch(r, currentBody) {
+      var patch = {};
+      if (PILLAR_VALUES.indexOf(r.category) !== -1) patch.pillar = r.category;
+      if (MOOD_VALUES.indexOf(r.mood) !== -1) patch.mood = r.mood;
+      if (MOOD_VALUES.indexOf(r.secondary_mood) !== -1) patch.secondary_mood = r.secondary_mood;
+      if (typeof r.intensity === "number") patch.intensity = r.intensity;
+      ["excerpt", "seo_title", "meta_description", "featured_quote", "key_takeaway", "slug"].forEach(function (k) {
+        if (typeof r[k] === "string" && r[k].trim()) patch[k] = r[k].trim();
+      });
+      if (Array.isArray(r.tags) && r.tags.length) patch.tags = r.tags.map(String);
+      if (Array.isArray(r.faq) && r.faq.length) {
+        patch.faq = r.faq
+          .filter(function (f) { return f && f.question && f.answer; })
+          .map(function (f) { return { question: String(f.question), answer: String(f.answer) }; });
+      }
+      var woven = null;
+      if (r.link_placements && r.link_placements.length && currentBody) {
+        woven = weaveLinks(currentBody, r.link_placements);
+        patch.body = woven.body;
+      }
+      return { patch: patch, linkReport: woven ? woven.report : [] };
+    }
+
+    // ---------------------------------------------------------------
+    // Pasting an essay copied from Claude (or any web page / chat).
+    //
+    // Decap's rich-text editor turns pasted HTML into formatting, but copied
+    // chat/web HTML is full of wrapper <div>s, spans and raw line breaks that
+    // it mangles (paragraphs merge, headings and bold vanish). So we rebuild
+    // the clipboard as clean, simple HTML -- from the copied HTML, or from
+    // plain-text markdown when that's all there is -- and hand THAT to
+    // Decap's own paste handling. Pasting into the raw Markdown box is left
+    // alone.
+    // ---------------------------------------------------------------
+    function escHtml(t) {
+      return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function escAttr(t) { return escHtml(t).replace(/"/g, "&quot;"); }
+
+    var BLOCK_TAGS = { P: 1, DIV: 1, SECTION: 1, ARTICLE: 1, MAIN: 1, HEADER: 1, FOOTER: 1, UL: 1, OL: 1, LI: 1, BLOCKQUOTE: 1, PRE: 1, H1: 1, H2: 1, H3: 1, H4: 1, H5: 1, H6: 1, HR: 1, TABLE: 1, FIGURE: 1 };
+
+    function inlineHtml(node) {
+      if (node.nodeType === 3) return escHtml(node.textContent.replace(/\s+/g, " "));
+      if (node.nodeType !== 1) return "";
+      var tag = node.nodeName;
+      var inner = Array.prototype.map.call(node.childNodes, inlineHtml).join("");
+      if (tag === "BR") return "<br>";
+      if (tag === "STRONG" || tag === "B") return inner.trim() ? "<strong>" + inner + "</strong>" : inner;
+      if (tag === "EM" || tag === "I") return inner.trim() ? "<em>" + inner + "</em>" : inner;
+      if (tag === "CODE") return inner.trim() ? "<code>" + inner + "</code>" : inner;
+      if (tag === "A") {
+        var href = node.getAttribute("href");
+        return href && inner.trim() ? '<a href="' + escAttr(href) + '">' + inner + "</a>" : inner;
+      }
+      if (BLOCK_TAGS[tag]) return inner + " ";
+      return inner; // span, font, etc.: keep the text, drop the wrapper
+    }
+    function hasBlockChild(node) {
+      return Array.prototype.some.call(node.childNodes, function (c) {
+        return c.nodeType === 1 && (BLOCK_TAGS[c.nodeName] || hasBlockChild(c));
+      });
+    }
+    function blocksHtml(node, out) {
+      var buffer = "";
+      function flush() {
+        if (buffer.replace(/<br>|\s/g, "")) out.push("<p>" + buffer.trim() + "</p>");
+        buffer = "";
+      }
+      Array.prototype.forEach.call(node.childNodes, function (c) {
+        if (c.nodeType === 1 && BLOCK_TAGS[c.nodeName]) {
+          flush();
+          var tag = c.nodeName;
+          if (/^H[1-6]$/.test(tag)) {
+            var h = inlineHtml(c).trim();
+            if (h) out.push("<" + tag.toLowerCase() + ">" + h + "</" + tag.toLowerCase() + ">");
+          } else if (tag === "UL" || tag === "OL") {
+            var items = [];
+            (function collect(list) {
+              Array.prototype.forEach.call(list.children, function (li) {
+                if (li.nodeName !== "LI") return;
+                var text = Array.prototype.filter.call(li.childNodes, function (n) {
+                  return !(n.nodeType === 1 && (n.nodeName === "UL" || n.nodeName === "OL"));
+                }).map(inlineHtml).join("").trim();
+                if (text) items.push("<li>" + text + "</li>");
+                Array.prototype.forEach.call(li.children, function (n) {
+                  if (n.nodeName === "UL" || n.nodeName === "OL") collect(n);
+                });
+              });
+            })(c);
+            if (items.length) out.push("<" + tag.toLowerCase() + ">" + items.join("") + "</" + tag.toLowerCase() + ">");
+          } else if (tag === "BLOCKQUOTE") {
+            var q = [];
+            blocksHtml(c, q);
+            if (q.length) out.push("<blockquote>" + q.join("") + "</blockquote>");
+          } else if (tag === "PRE") {
+            out.push("<pre><code>" + escHtml(c.textContent.replace(/\n+$/, "")) + "</code></pre>");
+          } else if (tag === "HR") {
+            // no thematic-break block in the rich-text editor; skip
+          } else if (hasBlockChild(c)) {
+            blocksHtml(c, out); // wrapper div/section: look inside
+          } else {
+            var t = inlineHtml(c).trim();
+            if (t) out.push("<p>" + t + "</p>");
+          }
+        } else {
+          buffer += inlineHtml(c);
+        }
+      });
+      flush();
+    }
+    function cleanHtml(html) {
+      var doc = new DOMParser().parseFromString(html, "text/html");
+      var out = [];
+      blocksHtml(doc.body, out);
+      return out.join("");
+    }
+
+    function mdInline(t) {
+      var s = escHtml(t);
+      s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+      s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>');
+      s = s.replace(/\*\*([^*]+)\*\*|__([^_]+)__/g, function (m, a, b) { return "<strong>" + (a || b) + "</strong>"; });
+      s = s.replace(/(^|[^*\w])\*([^*\s][^*]*)\*(?!\*)|(^|[^_\w])_([^_\s][^_]*)_(?!\w)/g, function (m, p1, a, p2, b) {
+        return (p1 || p2 || "") + "<em>" + (a || b) + "</em>";
+      });
+      return s;
+    }
+    function markdownToCleanHtml(md) {
+      var lines = String(md).replace(/\r\n?/g, "\n").split("\n");
+      var out = [], para = [], list = null, quote = [];
+      function flushPara() { if (para.length) { out.push("<p>" + mdInline(para.join(" ")) + "</p>"); para = []; } }
+      function flushList() { if (list) { out.push("<" + list.type + ">" + list.items.join("") + "</" + list.type + ">"); list = null; } }
+      function flushQuote() { if (quote.length) { out.push("<blockquote><p>" + mdInline(quote.join(" ")) + "</p></blockquote>"); quote = []; } }
+      function flushAll() { flushPara(); flushList(); flushQuote(); }
+      lines.forEach(function (raw) {
+        var line = raw.replace(/\s+$/, "");
+        var m;
+        if (!line.trim()) { flushAll(); return; }
+        if ((m = /^\s{0,3}(#{1,6})\s+(.*)$/.exec(line))) {
+          flushAll();
+          out.push("<h" + m[1].length + ">" + mdInline(m[2].replace(/\s+#+\s*$/, "")) + "</h" + m[1].length + ">");
+        } else if (/^\s{0,3}([-*_])(\s*\1){2,}\s*$/.test(line)) {
+          flushAll(); // horizontal rule: dropped
+        } else if ((m = /^\s*([-*+])\s+(.*)$/.exec(line)) || (m = /^\s*(\d+)[.)]\s+(.*)$/.exec(line))) {
+          flushPara(); flushQuote();
+          var type = /\d/.test(m[1]) ? "ol" : "ul";
+          if (list && list.type !== type) flushList();
+          if (!list) list = { type: type, items: [] };
+          list.items.push("<li>" + mdInline(m[2]) + "</li>");
+        } else if ((m = /^\s*>\s?(.*)$/.exec(line))) {
+          flushPara(); flushList();
+          quote.push(m[1]);
+        } else {
+          flushList(); flushQuote();
+          para.push(line.trim());
+        }
+      });
+      flushAll();
+      return out.join("");
+    }
+
+    var SEMANTIC_HTML = /<(h[1-6]|p|strong|em|b|i|ul|ol|li|blockquote|a)[\s>]/i;
+    var LOOKS_LIKE_MARKDOWN = /(^|\n)\s{0,3}(#{1,6}\s|[-*+]\s|\d+[.)]\s|>\s)|\*\*[^*\n]+\*\*|\[[^\]\n]+\]\([^)\s]+\)/;
+
+    document.addEventListener("paste", function (e) {
+      if (e.navyaaSynthetic) return;
+      var target = e.target;
+      var editable = target && target.closest && target.closest('.cms-editor-visual [data-slate-editor="true"]');
+      if (!editable || !e.clipboardData) return;
+
+      var html = e.clipboardData.getData("text/html");
+      var text = e.clipboardData.getData("text/plain");
+      var clean = "";
+      if (html && SEMANTIC_HTML.test(html)) {
+        clean = cleanHtml(html);
+      } else if (text && LOOKS_LIKE_MARKDOWN.test(text)) {
+        clean = markdownToCleanHtml(text);
+      }
+      if (!clean) return; // plain text or an image: let Decap handle it as usual
+
+      e.preventDefault();
+      e.stopPropagation();
+      try {
+        // Chrome/Edge/Safari/Firefox deliver pastes to the editor as a
+        // "beforeinput" event (inputType insertFromPaste), not as the paste
+        // event itself, so that is the event we replay with the cleaned data.
+        var dt = new DataTransfer();
+        dt.setData("text/html", clean);
+        dt.setData("text/plain", text || "");
+        var replay = new InputEvent("beforeinput", {
+          inputType: "insertFromPaste", dataTransfer: dt, bubbles: true, cancelable: true,
+        });
+        editable.dispatchEvent(replay);
+      } catch (err) {
+        // If the browser won't let us build that event, insert the plain
+        // text so nothing the writer copied is ever lost.
+        document.execCommand("insertText", false, text || "");
+      }
+    }, true);
+
+    var LAST_RESULT_KEY = "navyaa-ai-last-result";
 
     var NavyaaAIControl = window.createClass({
       getInitialState: function () {
+        // Filling the form re-mounts it (see applyToDraft), which would wipe
+        // this panel, so the last result is parked in sessionStorage for one
+        // re-mount and shown again here.
+        var restored = null;
+        try {
+          var raw = sessionStorage.getItem(LAST_RESULT_KEY);
+          if (raw) { restored = JSON.parse(raw); sessionStorage.removeItem(LAST_RESULT_KEY); }
+        } catch (e) {}
         return {
-          loading: false, error: "", result: null, copied: "", linkInput: "",
+          loading: false, error: "", copied: "", linkInput: "",
+          result: restored ? restored.result : null,
+          linkReport: restored ? restored.linkReport : [],
+          filled: restored ? restored.filled : null,
           existingPosts: [], postsLoading: true, postsError: "", postFilter: "",
         };
       },
@@ -176,27 +411,25 @@
       analyze: function () {
         var self = this;
         var entry = this.props.entry;
-        var title = (entry && entry.getIn(["data", "title"])) || "";
-        var body = (entry && entry.getIn(["data", "body"])) || "";
-
-        if (!title) title = getFieldValueByLabel("Title");
-        if (!body) body = getFieldValueByLabel("Body");
+        // The store holds the live draft, so this works on a brand-new entry
+        // before its first Save; the entry prop is only a fallback.
+        var title = getDraftValue("title") || (entry && entry.getIn(["data", "title"])) || "";
+        var body = getDraftValue("body") || (entry && entry.getIn(["data", "body"])) || "";
 
         if (!title && !body) {
-          self.setState({ error: "Write a title or some content first.", result: null });
+          self.setState({ error: "Write a title or some content first.", result: null, filled: null });
           return;
         }
 
-        // Writer-typed titles of existing posts to link to. Split on
-        // newlines/commas; the function resolves each against the site's
-        // real posts index, so a typo just comes back unresolved rather
-        // than ever producing a wrong URL.
+        // Writer-picked titles of existing posts to link to. The function
+        // resolves each against the site's real posts index, so a typo just
+        // comes back unresolved rather than ever producing a wrong URL.
         var linkedTitles = (self.state.linkInput || "")
           .split(/[\n,]/)
           .map(function (s) { return s.trim(); })
           .filter(Boolean);
 
-        self.setState({ loading: true, error: "", result: null, copied: "" });
+        self.setState({ loading: true, error: "", result: null, filled: null, linkReport: [], copied: "" });
 
         fetch("/api/ai-suggest", {
           method: "POST",
@@ -209,18 +442,31 @@
               self.setState({ loading: false, error: res.data.error || "Request failed." });
               return;
             }
-            self.setState({ loading: false, result: res.data });
-            self.props.onChange(JSON.stringify(res.data));
+            var built = buildPatch(res.data, body);
+            var applied = applyToDraft(built.patch);
+            if (applied) {
+              // The form re-mounts (and this panel with it); park the result
+              // so the new panel can show what was filled in.
+              try {
+                sessionStorage.setItem(LAST_RESULT_KEY, JSON.stringify({
+                  result: res.data, linkReport: built.linkReport, filled: true,
+                }));
+              } catch (e) {}
+            } else {
+              self.setState({
+                loading: false, result: res.data, linkReport: built.linkReport, filled: false,
+                error: "Couldn't fill the fields automatically — the suggestions are listed below to copy by hand.",
+              });
+            }
           })
           .catch(function (err) {
             self.setState({ loading: false, error: "Request failed: " + err.message });
           });
       },
-      copy: function (field, text, targetLabel) {
+      copy: function (field, text) {
         copyToClipboard(text);
         var self = this;
         self.setState({ copied: field });
-        if (targetLabel) scrollToFieldByLabel(targetLabel);
         setTimeout(function () { self.setState({ copied: "" }); }, 1500);
       },
       render: function () {
@@ -232,21 +478,13 @@
         var btn = { background: "#6E3035", color: "#F7F4EE", border: "none", borderRadius: "3px", padding: "10px 18px", fontSize: "13px", cursor: "pointer" };
         var copyBtn = { background: "none", color: "#6E3035", border: "1px solid #6E3035", borderRadius: "3px", padding: "2px 8px", fontSize: "11px", cursor: "pointer", marginLeft: "8px" };
 
-        function copyButton(field, text, targetLabel) {
+        function copyButton(field, text) {
           if (!text) return null;
           return h("button", {
             type: "button",
             style: copyBtn,
-            onClick: function () { self.copy(field, text, targetLabel); },
+            onClick: function () { self.copy(field, text); },
           }, state.copied === field ? "Copied" : "Copy");
-        }
-
-        function showButton(targetLabel) {
-          return h("button", {
-            type: "button",
-            style: copyBtn,
-            onClick: function () { scrollToFieldByLabel(targetLabel); },
-          }, "Show field");
         }
 
         var linkInputStyle = {
@@ -304,7 +542,7 @@
 
         var children = [
           h("label", { key: "linklabel", style: { display: "block", fontSize: "12px", color: "#77736D", marginBottom: "4px" } },
-            "Link to these existing posts (optional)"
+            "Link to these existing posts (optional) — Analyze will add the links into your essay"
           ),
           h("input", {
             key: "postfilter",
@@ -330,109 +568,66 @@
             placeholder: "Paste or type an exact post title…",
             onChange: this.handleLinkInputChange,
           }),
-          h("button", { type: "button", style: btn, onClick: this.analyze, disabled: state.loading },
+          h("button", { key: "analyze", type: "button", style: btn, onClick: this.analyze, disabled: state.loading },
             state.loading ? "Analyzing…" : "Analyze with AI"
           ),
         ];
 
         if (state.error) {
-          children.push(h("div", { style: { color: "#6E3035", marginTop: "8px", fontSize: "13px" } }, state.error));
+          children.push(h("div", { key: "error", style: { color: "#6E3035", marginTop: "8px", fontSize: "13px" } }, state.error));
         }
 
         if (r) {
           var sectionHeading = { fontWeight: 600, marginTop: "14px", marginBottom: "4px", display: "block" };
 
           var resultChildren = [
-            h("div", { key: "cat" }, [h("strong", null, "Pillar: "), r.category || "—", r.category ? showButton("Pillar") : null]),
-            h("div", { key: "mood" }, [h("strong", null, "Mood: "), r.mood || "—", r.secondary_mood ? " / " + r.secondary_mood : "", r.mood ? showButton("Mood") : null]),
-            h("div", { key: "int" }, [h("strong", null, "Intensity: "), r.intensity != null ? r.intensity : "—", showButton("Emotional intensity")]),
-            h("div", { key: "slug" }, [h("strong", null, "URL slug: "), r.slug || "—", copyButton("slug", r.slug, "URL slug")]),
-            h("div", { key: "exc" }, [h("strong", null, "Excerpt: "), r.excerpt || "—", copyButton("excerpt", r.excerpt, "Excerpt")]),
-            h("div", { key: "seo" }, [h("strong", null, "SEO title: "), r.seo_title || "—", copyButton("seo", r.seo_title, "SEO title")]),
-            h("div", { key: "meta" }, [h("strong", null, "Meta description: "), r.meta_description || "—", copyButton("meta", r.meta_description, "Meta description")]),
-            h("div", { key: "tags" }, [h("strong", null, "Tags: "), (r.tags || []).join(", ") || "—", (r.tags || []).length ? copyButton("tags", r.tags.join(", "), "Tags") : null]),
-            h("div", { key: "quote" }, [h("strong", null, "Featured quote: "), r.featured_quote || "—", r.featured_quote ? copyButton("quote", r.featured_quote, "Featured quote") : null]),
-            h("div", { key: "img", style: { marginTop: "8px" } }, [
-              h("strong", null, "Image prompt: "),
-              copyButton("image_prompt", r.image_prompt),
-              h("div", { style: { marginTop: "4px", color: "#3A3733" } }, r.image_prompt || "—"),
-            ]),
+            h("div", { key: "head", style: { fontWeight: 600, marginBottom: "6px" } },
+              state.filled
+                ? "Filled in below — check each field, then Save."
+                : "Suggestions"
+            ),
+            h("div", { key: "cat" }, [h("strong", null, "Pillar: "), r.category || "—"]),
+            h("div", { key: "mood" }, [h("strong", null, "Mood: "), r.mood || "—", r.secondary_mood ? " / " + r.secondary_mood : ""]),
+            h("div", { key: "int" }, [h("strong", null, "Intensity: "), r.intensity != null ? r.intensity : "—"]),
+            h("div", { key: "slug" }, [h("strong", null, "URL slug: "), r.slug || "—"]),
+            h("div", { key: "exc" }, [h("strong", null, "Excerpt: "), r.excerpt || "—"]),
+            h("div", { key: "seo" }, [h("strong", null, "SEO title: "), r.seo_title || "—"]),
+            h("div", { key: "meta" }, [h("strong", null, "Meta description: "), r.meta_description || "—"]),
+            h("div", { key: "tags" }, [h("strong", null, "Tags: "), (r.tags || []).join(", ") || "—"]),
+            h("div", { key: "quote" }, [h("strong", null, "Featured quote: "), r.featured_quote || "—"]),
+            h("div", { key: "take" }, [h("strong", null, "Key takeaway: "), r.key_takeaway || "—"]),
+            h("div", { key: "faq" }, [h("strong", null, "FAQ: "), (r.faq && r.faq.length) ? r.faq.length + " question" + (r.faq.length === 1 ? "" : "s") : "none for this essay"]),
           ];
 
-          // Cluster suggestion -- always rendered (including "None"), with
-          // a highlighted background so it's impossible to scroll past
-          // without noticing. Select widgets can't be pasted into, so this
-          // is a manual-click instruction (with a Show field jump) rather
-          // than an auto-fill.
-          resultChildren.push(
-            h("div", { key: "cluster", style: { marginTop: "8px", padding: "6px 10px", background: "#F0EAE3", borderLeft: "3px solid #6E3035" } }, [
-              h("strong", null, "Cluster: "),
-              r.cluster === "None" ? "None — this essay doesn't fit an existing cluster" : (r.cluster + (r.cluster_role ? " (" + r.cluster_role + ")" : "")),
-              r.cluster !== "None" ? showButton("Cluster") : null,
-              h("div", { style: { fontSize: "11px", color: "#77736D", marginTop: "2px" } }, "Select this in the Cluster / Cluster role fields below."),
-            ])
-          );
-
-          if (r.key_takeaway) {
+          if (state.linkReport && state.linkReport.length) {
             resultChildren.push(
-              h("div", { key: "takeaway", style: { marginTop: "10px" } }, [
-                h("span", { style: sectionHeading }, "Key takeaway"),
-                copyButton("key_takeaway", r.key_takeaway, "Key takeaway"),
-                h("div", { style: { marginTop: "4px" } }, r.key_takeaway),
+              h("div", { key: "links", style: { marginTop: "10px" } }, [
+                h("span", { style: sectionHeading }, "Links added to the essay"),
+                h("ul", { style: { margin: "4px 0 0", paddingLeft: "20px" } },
+                  state.linkReport.map(function (item, i) {
+                    return h("li", { key: i }, [h("strong", null, item.title), " — " + item.how]);
+                  })
+                ),
               ])
             );
           }
+
+          // The image prompt has no field in the form (it's pasted into an
+          // image generator), so it is the one thing offered to copy.
+          resultChildren.push(
+            h("div", { key: "img", style: { marginTop: "10px" } }, [
+              h("strong", null, "Image prompt: "),
+              copyButton("image_prompt", r.image_prompt),
+              h("div", { style: { marginTop: "4px", color: "#3A3733" } }, r.image_prompt || "—"),
+            ])
+          );
 
           if (r.h2_outline && r.h2_outline.length) {
             resultChildren.push(
               h("div", { key: "outline", style: { marginTop: "10px" } }, [
-                h("span", { style: sectionHeading }, "Suggested section headings"),
+                h("span", { style: sectionHeading }, "Suggested section headings (for reference — not added to the essay)"),
                 h("ol", { style: { margin: "4px 0 0", paddingLeft: "20px" } },
                   r.h2_outline.map(function (h2, i) { return h("li", { key: i }, h2); })
-                ),
-              ])
-            );
-          }
-
-          if (r.faq && r.faq.length) {
-            resultChildren.push(
-              h("div", { key: "faq", style: { marginTop: "10px" } }, [
-                h("span", { style: sectionHeading }, "Suggested FAQ"),
-                h("div", null,
-                  r.faq.map(function (item, i) {
-                    return h("div", { key: i, style: { marginTop: "8px", paddingLeft: "8px", borderLeft: "2px solid #D8D1C8" } }, [
-                      h("div", null, [h("strong", null, item.question), copyButton("faq_q_" + i, item.question, "FAQ")]),
-                      h("div", { style: { marginTop: "2px" } }, [item.answer, copyButton("faq_a_" + i, item.answer, "FAQ")]),
-                    ]);
-                  })
-                ),
-                h("div", { style: { fontSize: "11px", color: "#77736D", marginTop: "6px" } },
-                  "Click \"+ Add\" in the FAQ field below, then Copy each Question and Answer here into it, one pair per entry."
-                ),
-              ])
-            );
-          }
-
-          if (r.link_placements && r.link_placements.length) {
-            resultChildren.push(
-              h("div", { key: "links", style: { marginTop: "10px" } }, [
-                h("span", { style: sectionHeading }, "Suggested internal links (verified URLs)"),
-                h("div", null,
-                  r.link_placements.map(function (lp, i) {
-                    var markdownLink = "[" + lp.title + "](" + lp.url + ")";
-                    return h("div", { key: i, style: { marginTop: "6px", paddingLeft: "8px", borderLeft: "2px solid #D8D1C8" } }, [
-                      h("div", null, [
-                        h("strong", null, lp.title),
-                        " → ",
-                        h("code", { style: { fontSize: "11px" } }, lp.url),
-                        copyButton("link_" + i, markdownLink, "Body"),
-                      ]),
-                      lp.suggested_sentence
-                        ? h("div", { style: { fontStyle: "italic", marginTop: "2px" } }, "\"" + lp.suggested_sentence + "\"")
-                        : null,
-                      h("div", { style: { fontSize: "10px", color: "#9A968E", marginTop: "2px" } }, "Copy pastes: " + markdownLink),
-                    ]);
-                  })
                 ),
               ])
             );
@@ -441,7 +636,7 @@
           if (r.unresolved_link_titles && r.unresolved_link_titles.length) {
             resultChildren.push(
               h("div", { key: "unresolved", style: { marginTop: "10px", color: "#6E3035" } }, [
-                h("strong", null, "Couldn't verify: "),
+                h("strong", null, "Couldn't link: "),
                 r.unresolved_link_titles.join(", "),
                 h("div", { style: { fontSize: "11px" } }, r.unresolved_link_note || "Check the exact title spelling."),
               ])
@@ -454,13 +649,7 @@
             );
           }
 
-          resultChildren.push(
-            h("div", { key: "note", style: { marginTop: "10px", color: "#77736D", fontStyle: "italic" } },
-              "Copy whichever of these you agree with into the fields below. Nothing here is applied automatically."
-            )
-          );
-
-          children.push(h("div", { style: box }, resultChildren));
+          children.push(h("div", { key: "result", style: box }, resultChildren));
         }
 
         return h("div", null, children);

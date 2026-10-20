@@ -12,17 +12,6 @@ const MOODS = [
 // slugified guess could.
 const POSTS_INDEX_URL = "https://navyaa.blog/posts-index.json";
 
-// The four content clusters from the SEO content audit (v2). Static by
-// design -- this is editorial strategy, not generated data, so it's kept
-// here directly rather than fetched. Update this list by hand when the
-// cluster plan changes.
-const CLUSTERS = [
-  { name: "Pulling Away", pillar: "Love" },
-  { name: "Breakups & Healing", pillar: "Love/Self" },
-  { name: "Overthinking", pillar: "Self" },
-  { name: "Self-worth", pillar: "Love" },
-];
-
 // Navyaa's featured-image house style — kept here so every AI-suggested
 // image prompt stays on-brand instead of drifting toward generic stock-photo
 // or wellness-blog imagery. Four failure modes have shown up in testing:
@@ -223,8 +212,6 @@ export default async (req: Request, context: Context) => {
   const lensOptions = [...IMAGE_LENSES].sort(() => Math.random() - 0.5).slice(0, 5);
   const light = IMAGE_LIGHTS[Math.floor(Math.random() * IMAGE_LIGHTS.length)];
 
-  const clusterList = CLUSTERS.map((c) => `${c.name} (${c.pillar})`).join(", ");
-
   const linkContext = verifiedLinks.length
     ? "These existing Navyaa posts should be linked naturally in the body:\n" +
       verifiedLinks.map((l) => `- "${l.title}" -> ${l.url}`).join("\n")
@@ -233,8 +220,8 @@ export default async (req: Request, context: Context) => {
   const systemPrompt =
     "You are the editorial assistant for Navyaa, a personal essay blog about Love, Self, Life and Soul. " +
     "You suggest metadata AND structure for a new post. You NEVER invent facts about the author. " +
-    "The writer's literary voice must be preserved -- your suggestions are proposals the writer reviews and " +
-    "manually applies, never auto-published text. " +
+    "The writer's literary voice must be preserved -- your suggestions are filled into the editor for the writer " +
+    "to review before saving, and are never auto-published. " +
     "When you write image_prompt, follow this house style exactly: " + IMAGE_STYLE_GUIDE + " " +
     "You respond with strict JSON only, no prose, no markdown fences.";
 
@@ -244,7 +231,6 @@ export default async (req: Request, context: Context) => {
     `IMAGE DIRECTION: the image must come from THIS essay's body, not a stock scene. Choose the ONE subject lens that best fits this essay's specific content and feeling, from these options only: ${lensOptions.map((l, i) => `(${i + 1}) ${l}`).join("; ")}. LIGHT = ${light}.
 
 ` +
-    `Available content clusters (pick the closest fit, or "None" if this essay doesn't fit any): ${clusterList}\n\n` +
     "Return a JSON object with exactly these keys: " +
     `{"category":"one of: ${PILLARS.join(", ")}",` +
     `"mood":"one of: ${MOODS.join(", ")}",` +
@@ -262,13 +248,11 @@ export default async (req: Request, context: Context) => {
     `"visual_metaphor":"one sentence describing a single metaphorical image built through your chosen lens and the assigned LIGHT, transforming at least one distinctive image or phrase from body_evidence into metaphor, so the image could only belong to THIS essay, with no inventory of props from the text",` +
     `"image_prompt":"one ready-to-use AI image-generation prompt built from the visual_metaphor above (never a list of objects from the text), following the house style. Describe the subject (per your chosen lens), the light (per LIGHT), the scale, and one contrasting element. End it with the literal text ` +
     `'16:9 landscape, centered composition, 1920x1080' so the ratio travels with the prompt wherever it's pasted. 4-6 sentences.",` +
-    `"cluster":"the best-fit cluster name from the list above, or \\"None\\"",` +
-    `"cluster_role":"\\"supporting\\" if a cluster was chosen, otherwise empty string",` +
     `"h2_outline":["5-7 section headings for this essay, following a searchable-but-literary structure: a quick-answer opener, the deep analysis in the writer's own words, a practical/what-to-do section, and a closing reflection -- adapt the exact headings to what this specific essay is actually about"],` +
     `"key_takeaway":"a 1-2 sentence direct answer to the essay's core question, suitable for a highlighted callout box near the top",` +
     `"faq":[{"question":"...", "answer":"1-2 sentence answer"}] ` +
     `(2-4 items ONLY if the topic genuinely has question-shaped search intent, otherwise an empty array),` +
-    `"link_placements":[{"title":"exact title as given above", "suggested_sentence":"a natural sentence from THIS essay's body or a close paraphrase of one, showing where and how to weave in a link to that post"}] ` +
+    `"link_placements":[{"title":"exact title as given above", "anchor_text":"2-6 consecutive words copied EXACTLY, character for character, from the Body above, taken from a sentence that is closest in meaning to that linked post (never from the title or a heading); the writer's own words will become the link text, so never paraphrase"}] ` +
     `(one entry per linked post provided above; omit this key entirely if none were provided)}`;
 
   try {
@@ -340,14 +324,6 @@ export default async (req: Request, context: Context) => {
     delete parsed.body_evidence;
     delete parsed.chosen_lens;
 
-    // Cluster must be a real cluster name or "None" -- never trust the
-    // model's own string verbatim.
-    const clusterNames = CLUSTERS.map((c) => c.name);
-    if (typeof parsed.cluster !== "string" || !clusterNames.includes(parsed.cluster)) {
-      parsed.cluster = "None";
-    }
-    parsed.cluster_role = parsed.cluster === "None" ? "" : "supporting";
-
     if (!Array.isArray(parsed.h2_outline)) {
       parsed.h2_outline = [];
     }
@@ -359,20 +335,22 @@ export default async (req: Request, context: Context) => {
     }
 
     // Overwrite the model's link_placements titles/urls with our own
-    // verified data -- the model only supplies the suggested sentence,
-    // never the URL itself, so a hallucinated or mismatched link is
-    // structurally impossible.
+    // verified data -- the model only supplies the anchor phrase, never the
+    // URL itself, so a hallucinated or mismatched link is structurally
+    // impossible. The anchor must also appear verbatim in the essay, or it
+    // is dropped (the admin page then appends the link as a "Related
+    // reading" line instead of guessing where it goes).
     const modelPlacements = Array.isArray(parsed.link_placements) ? parsed.link_placements : [];
     parsed.link_placements = verifiedLinks.map((link) => {
       const modelEntry = modelPlacements.find(
         (p: any) => typeof p?.title === "string" && normalizeForMatch(p.title) === normalizeForMatch(link.title)
       );
+      const anchor = typeof modelEntry?.anchor_text === "string" ? modelEntry.anchor_text.trim() : "";
       return {
         title: link.title,
         url: link.url,
         verified: true,
-        suggested_sentence:
-          typeof modelEntry?.suggested_sentence === "string" ? modelEntry.suggested_sentence : "",
+        anchor_text: anchor.length >= 3 && content.includes(anchor) ? anchor : "",
       };
     });
 

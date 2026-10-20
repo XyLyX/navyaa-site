@@ -43,24 +43,11 @@ collections:
         name: "ai_assist"
         widget: "navyaa-ai"
         required: false
-        hint: "Click Analyze, read the suggestions, then set the fields below yourself — nothing here publishes automatically."
+        hint: "Click Analyze with AI: it fills in the fields below (and adds links to the posts you pick). Review them, then Save — nothing publishes automatically."
       - label: "Pillar"
         name: "pillar"
         widget: "select"
         options: ["Love", "Self", "Life", "Soul"]
-      - label: "Cluster"
-        name: "cluster"
-        widget: "select"
-        options: ["None", "Pulling Away", "Breakups & Healing", "Overthinking", "Self-worth"]
-        default: "None"
-        required: false
-        hint: "Which content cluster this essay belongs to, if any. See the Navyaa Intelligence suggestion above."
-      - label: "Cluster role"
-        name: "cluster_role"
-        widget: "select"
-        options: ["", "pillar", "supporting", "related"]
-        required: false
-        hint: "Leave blank if Cluster is None."
       - label: "Mood"
         name: "mood"
         widget: "select"
