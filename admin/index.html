@@ -424,8 +424,9 @@
         // Writer-picked titles of existing posts to link to. The function
         // resolves each against the site's real posts index, so a typo just
         // comes back unresolved rather than ever producing a wrong URL.
+        // Split on line breaks ONLY: real titles contain commas.
         var linkedTitles = (self.state.linkInput || "")
-          .split(/[\n,]/)
+          .split(/\n/)
           .map(function (s) { return s.trim(); })
           .filter(Boolean);
 
