@@ -1,0 +1,10 @@
+{%- set picUrl = "" %}{%- set pic = post.data.pin_image or post.data.image %}
+{%- if pic %}{% set picUrl = pic if pic.startsWith("http") else "https://navyaa.blog" + pic %}{% endif %}
+<item>
+  <title>{{ post.data.seo_title or post.data.title }}</title>
+  <link>https://navyaa.blog{{ post.url }}</link>
+  <guid>https://navyaa.blog{{ post.url }}</guid>
+  <description><![CDATA[{% if picUrl %}<img src="{{ picUrl }}" alt="{{ post.data.seo_title or post.data.title }} - {{ post.data.pillar }} essay by Navyaa" />{% endif %}{{ post.data.meta_description or post.data.excerpt }}{% if post.data.tags %} {% for t in post.data.tags %}{% if t != "post" %}#{{ t | replace(" ", "") | replace("-", "") }} {% endif %}{% endfor %}{% endif %}#Navyaa #{{ post.data.pillar }}]]></description>
+  {% if picUrl %}<media:content url="{{ picUrl }}" medium="image" />{% endif %}
+  {% if post.date %}<pubDate>{{ post.date.toUTCString() }}</pubDate>{% endif %}
+</item>

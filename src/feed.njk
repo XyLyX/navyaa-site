@@ -11,16 +11,7 @@ eleventyExcludeFromCollections: true
 <description>The human side of relationships, emotions and becoming yourself.</description>
 <language>en</language>
 {%- for post in collections.posts %}
-{%- set picUrl = "" %}{%- set pic = post.data.pin_image or post.data.image %}
-{%- if pic %}{% set picUrl = pic if pic.startsWith("http") else "https://navyaa.blog" + pic %}{% endif %}
-<item>
-  <title>{{ post.data.title }}</title>
-  <link>https://navyaa.blog{{ post.url }}</link>
-  <guid>https://navyaa.blog{{ post.url }}</guid>
-  <description><![CDATA[{% if picUrl %}<img src="{{ picUrl }}" alt="{{ post.data.title }}" />{% endif %}{{ post.data.excerpt }}]]></description>
-  {% if picUrl %}<media:content url="{{ picUrl }}" medium="image" />{% endif %}
-  {% if post.date %}<pubDate>{{ post.date.toUTCString() }}</pubDate>{% endif %}
-</item>
+{% include "feed-item.njk" %}
 {%- endfor %}
 </channel>
 </rss>

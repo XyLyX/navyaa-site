@@ -24,7 +24,12 @@
 {% set ogImageUrl = 'https://navyaa.blog' + ogImageRaw %}
 {% endif %}
 <meta property="og:image" content="{{ ogImageUrl }}">
-<meta name="twitter:card" content="summary_large_image">
+<meta property="og:site_name" content="Navyaa">
+<meta property="og:url" content="https://navyaa.blog{{ page.url }}">
+{% if pillar %}<meta property="article:published_time" content="{{ page.date.toISOString() }}">
+<meta property="article:section" content="{{ pillar }}">
+<meta property="article:author" content="Navyaa">
+{% endif %}<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ seo_title or title or 'Navyaa' }}">
 <meta name="twitter:description" content="{{ meta_description or excerpt or 'Navyaa — essays on Love, Self, Life and Soul, and the honest truth in between.' }}">
 <meta name="twitter:image" content="{{ ogImageUrl }}">

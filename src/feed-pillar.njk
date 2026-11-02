@@ -1,0 +1,22 @@
+---
+feedPillars: [Love, Self, Life, Soul]
+pagination:
+  data: feedPillars
+  size: 1
+  alias: pillarName
+permalink: "/feed-{{ pillarName | lower }}.xml"
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+<channel>
+<title>Navyaa - {{ pillarName }}</title>
+<link>https://navyaa.blog/{{ pillarName | lower }}/</link>
+<atom:link href="https://navyaa.blog/feed-{{ pillarName | lower }}.xml" rel="self" type="application/rss+xml" />
+<description>Navyaa essays on {{ pillarName }}.</description>
+<language>en</language>
+{%- for post in collections.posts %}{% if post.data.pillar == pillarName %}
+{% include "feed-item.njk" %}
+{%- endif %}{% endfor %}
+</channel>
+</rss>
