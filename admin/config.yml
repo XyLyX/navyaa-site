@@ -38,6 +38,7 @@ collections:
       - { label: "Publish date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: true }
       - { label: "URL slug", name: "slug", widget: "string", hint: "Used in the web address, e.g. /this-is-the-slug/" }
       - { label: "Featured image", name: "image", widget: "image", required: false }
+      - { label: "Pinterest image (vertical 2:3, e.g. 1000x1500)", name: "pin_image", widget: "image", required: false, hint: "Used for the Pinterest pin via the RSS feed. Falls back to the featured image." }
       - { label: "Body", name: "body", widget: "markdown" }
       - label: "Navyaa Intelligence"
         name: "ai_assist"
