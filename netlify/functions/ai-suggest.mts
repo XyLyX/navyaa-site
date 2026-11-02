@@ -248,6 +248,7 @@ export default async (req: Request, context: Context) => {
     `"visual_metaphor":"one sentence describing a single metaphorical image built through your chosen lens and the assigned LIGHT, transforming at least one distinctive image or phrase from body_evidence into metaphor, so the image could only belong to THIS essay, with no inventory of props from the text",` +
     `"image_prompt":"one ready-to-use AI image-generation prompt built from the visual_metaphor above (never a list of objects from the text), following the house style. Describe the subject (per your chosen lens), the light (per LIGHT), the scale, and one contrasting element. End it with the literal text ` +
     `'16:9 landscape, centered composition, 1920x1080' so the ratio travels with the prompt wherever it's pasted. 4-6 sentences.",` +
+    `"pin_image_prompt":"a second prompt for the Pinterest pin: the SAME visual_metaphor, light and palette as image_prompt, re-composed for a vertical 2:3 frame. Put the main subject in the upper two-thirds, centered, and keep the lower third calm and uncluttered so a title can sit there. No text in the image. End it with the literal text 'vertical 2:3 portrait, centered composition, 1000x1500'. 3-5 sentences.",` +
     `"h2_outline":["5-7 section headings for this essay, following a searchable-but-literary structure: a quick-answer opener, the deep analysis in the writer's own words, a practical/what-to-do section, and a closing reflection -- adapt the exact headings to what this specific essay is actually about"],` +
     `"key_takeaway":"a 1-2 sentence direct answer to the essay's core question, suitable for a highlighted callout box near the top",` +
     `"faq":[{"question":"...", "answer":"1-2 sentence answer"}] ` +
@@ -318,6 +319,7 @@ export default async (req: Request, context: Context) => {
       parsed.image_prompt = "";
     }
     parsed.image_prompt = parsed.image_prompt.slice(0, 1100);
+    parsed.pin_image_prompt = typeof parsed.pin_image_prompt === "string" ? parsed.pin_image_prompt.slice(0, 1100) : "";
     // Reasoning-only fields: they make the model think before writing the prompt; not needed by the CMS.
     delete parsed.emotional_core;
     delete parsed.visual_metaphor;
