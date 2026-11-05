@@ -1,6 +1,6 @@
 ---
 title: "Dhanteras: The First Treasure Is Life Itself"
-date: 2026-11-05T04:56
+date: 2026-11-06T03:14
 slug: dhanteras-the-first-treasure-is-life
 image: /images/uploads/gemini_generated_image_h2lkpuh2lkpuh2lk.jpg
 pin_image: /images/uploads/gemini_generated_image_eg4t84eg4t84eg4t.jpg
