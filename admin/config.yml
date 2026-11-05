@@ -19,11 +19,7 @@ collections:
     format: "frontmatter"
     identifier_field: title
     summary: "{{title}} — {{pillar}}"
-    sortable_fields:
-      fields: ["date", "title", "pillar"]
-      default:
-        field: date
-        direction: Descending
+    sortable_fields: ["date", "title", "pillar"]
     view_filters:
       - label: "Love"
         field: pillar
