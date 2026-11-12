@@ -1,6 +1,6 @@
 ---
 title: A Stage for the Deaf and Dumb
-date: 2026-11-12T04:00
+date: 2026-11-12T04:01
 slug: a-stage-for-the-deaf-and-dumb
 image: /images/uploads/gemini_generated_image_r79dr8r79dr8r79d.jpg
 pin_image: /images/uploads/gemini_generated_image_ms4yqzms4yqzms4y.jpg
