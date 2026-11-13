@@ -1,6 +1,6 @@
 ---
 title: The Five Who Showed Up
-date: 2026-11-13T21:31
+date: 2026-11-13T23:39
 slug: the-five-who-showed-up
 image: /images/uploads/gemini_generated_image_2t27rc2t27rc2t27.jpg
 pin_image: /images/uploads/gemini_generated_image_ckruzickruzickru.jpg
